@@ -1,4 +1,4 @@
-//import org.scalatest._
+/*import org.scalatest._
 import utils.Observable
 import utils.Observer
 import org.scalatest.wordspec.AnyWordSpec
@@ -28,4 +28,4 @@ class ObservableSpec extends AnyWordSpec with Matchers {
 
   }
 
-}
+}*/

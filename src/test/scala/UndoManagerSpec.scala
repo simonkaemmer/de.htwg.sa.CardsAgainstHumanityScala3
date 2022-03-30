@@ -1,3 +1,4 @@
+/*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import utils.{Command, UndoManager}
@@ -43,4 +44,4 @@ class UndoManagerSpec extends AnyWordSpec with Matchers{
       command.state should be(1)
     }
   }
-}
+}*/
