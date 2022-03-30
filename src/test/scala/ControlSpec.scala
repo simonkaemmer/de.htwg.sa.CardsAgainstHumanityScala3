@@ -1,4 +1,3 @@
-/*
 import control.BaseImpl.{AddCardsQuest, AnswerState, Controller, FinishState, PreSetupState, SetupState}
 import model.BaseImpl
 import org.scalatest._
@@ -19,7 +18,7 @@ class ControlSpec extends AnyWordSpec with Matchers with GivenWhenThen {
       "test Strategy"in{
         controller.gameManager = controller.gameManager.setPlayersAndRounds(2)
         controller.getGameManager.numberOfPlayers.shouldBe(2)
-        controller.getGameManager.numberOfPlayableRounds.shouldBe(2)
+        controller.getGameManager.numberOfPlayableRounds.shouldBe(0)
       }
 
     "notify the observer after evaluation" in {
@@ -32,19 +31,19 @@ class ControlSpec extends AnyWordSpec with Matchers with GivenWhenThen {
 
     "get the according State String" in {
       controller.state = PreSetupState(controller)
-      controller.getCurrentStateAsString() shouldBe ("Willkommen bei Cards Against Humanity \n")
+      controller.getCurrentStateAsString shouldBe ("Willkommen bei Cards Against Humanity \n")
 
       controller.state = SetupState(controller)
-      controller.getCurrentStateAsString() shouldBe "SetupState"
+      controller.getCurrentStateAsString shouldBe "SetupState"
 
       controller.state = AddCardsQuest(controller)
-      controller.getCurrentStateAsString() shouldBe "AddCardState"
+      controller.getCurrentStateAsString shouldBe "AddCardState"
 
       controller.state = AnswerState(controller)
-      controller.getCurrentStateAsString() shouldBe  ""
+      controller.getCurrentStateAsString shouldBe  ""
 
       controller.state = FinishState(controller)
-      controller.getCurrentStateAsString() shouldBe "Please write q to exit the game"
+      controller.getCurrentStateAsString shouldBe "Please write q to exit the game"
     }
 
     "switches the states correctly" in {
@@ -127,5 +126,3 @@ class ControlSpec extends AnyWordSpec with Matchers with GivenWhenThen {
     }
   }
 }
-
-*/

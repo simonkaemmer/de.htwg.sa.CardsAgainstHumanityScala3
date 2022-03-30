@@ -1,4 +1,3 @@
-/*
 import model.BaseImpl.{AnswerCard, Card, GameManager, KompositumCard, QuestionCard}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
@@ -71,4 +70,4 @@ class GameManagerSpec extends AnyWordSpec  with Matchers{
       gm.toString shouldNot be (null)
     }*/
   }
-}*/
+}

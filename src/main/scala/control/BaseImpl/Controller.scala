@@ -118,8 +118,6 @@ case class AddCardsQuest(controller: Controller) extends ControllerState {
   override def getCurrentStateAsString: String = "AddCardState"
 
   override def nextState: ControllerState = SetupState(controller)
-
-  override def equals(that: Any): Boolean = ???
 }
 
 case class SetupState(controller: Controller) extends ControllerState {
