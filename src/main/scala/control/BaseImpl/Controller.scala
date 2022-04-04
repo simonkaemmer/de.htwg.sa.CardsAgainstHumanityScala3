@@ -133,7 +133,7 @@ case class SetupState(controller: Controller) extends ControllerState {
     controller.publish(new UpdateGuiEvent)
     controller.publish(new UpdateTuiEvent)
 
-    //controller.gameManager = controller.gameManager.addPlayer(input)
+    controller.gameManager = controller.gameManager.addPlayer(input)
     if (controller.getGameManager.player.length == controller.getGameManager.numberOfPlayers) {
       println("Aus: " + controller.gameManager.getKompositum().cardList)
       controller.gameManager = controller.gameManager.createCardDeck()

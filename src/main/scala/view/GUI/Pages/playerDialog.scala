@@ -48,6 +48,7 @@ class playerDialog(controller: ControllerInterface, infobar: InfoBar) extends Di
         playerTf.validate()
       } else {
         controller.eval(playerTf.text)
+        print("Fickscheiß: " + controller.getCurrentStateAsString + "\n")
         playerTf.background = Color.WHITE
         infoTf.text = controller.getGameManager.player.toString()
         playerTf.text = "Spieler"
