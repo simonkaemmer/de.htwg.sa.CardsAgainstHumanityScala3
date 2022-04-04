@@ -10,14 +10,18 @@ class AddPlayersCommand(name: String, controller: ControllerInterface) extends C
 
     var playerTmp = controller.getGameManager.player
     playerTmp = playerTmp :+ Player(name, true, List[AnswerCard]())
-    controller.getGameManager.player = playerTmp
+    //controller.getGameManager.player = playerTmp
+
+    controller.getGameManager.copy(player = playerTmp)
   }
 
   override def undoStep: Unit = {
 
     var playerTmp = controller.getGameManager.player;
     playerTmp = playerTmp.filterNot(_==playerTmp.last)
-    controller.getGameManager.player = playerTmp
+    //controller.getGameManager.player = playerTmp
+
+    controller.getGameManager.copy(player = playerTmp)
   }
 
   override def redoStep: Unit = doStep

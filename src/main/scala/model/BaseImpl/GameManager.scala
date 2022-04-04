@@ -6,14 +6,14 @@ import model.{BaseImpl, ModelInterface}
 
 import scala.util.Random
 
-case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0,
+case class GameManager @Inject() (@Named("Def") numberOfPlayers: Int = 0,
                                   numberOfPlayableRounds: Int = 0,
                                   numberOfRounds: Int = 0,
                                   activePlayer: Int = 0,
                                   kompositumCard: KompositumCard = KompositumCard(List[Card]()), // var changed
-                                  player: Vector[Player] = Vector[Player](), // var changed
-                                  answerList: List[AnswerCard] = List[AnswerCard](),
-                                  questionList: List[QuestionCard] = List[QuestionCard](),
+                                  player: Vector[Player] = Vector(), // var changed
+                                  answerList: List[AnswerCard] = List(),
+                                  questionList: List[QuestionCard] = List(),
                                   roundAnswerCards: Map[Player, String] = Map[Player, String](),
                                   roundQuestion: String = ""   ) extends ModelInterface {
 
@@ -96,7 +96,7 @@ case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0,
     var tmpRounds = numberOfRounds
     tmpRounds = tmpRounds + 1
 
-
+    copy(questionList = removedQuestList.filterNot(_== quest), roundQuestion = quest.question, numberOfRounds = tmpRounds)
   }
 
   def placeCard(activePlayer: Int, card: AnswerCard): GameManager = {
@@ -114,18 +114,15 @@ case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0,
     var tmpPlayerVecList = player
     tmpPlayerVecList = tmpPlayerVecList.updated(activePlayer, Player(player(activePlayer).name, true, newPlayerHand))
 
-    player = tmpPlayerVecList
-    roundAnswerCards = tmpPlacedCardMap
-
-    this
+    copy(player = tmpPlayerVecList, roundAnswerCards = tmpPlacedCardMap)
   }
 
   def getActivePlayer(): Int = activePlayer
 
   def pickNextPlayer(): GameManager = {
-    activePlayer = (activePlayer + 1) % player.length
+   val tmpActivePlayer = (activePlayer + 1) % player.length
 
-    this
+    copy(activePlayer = tmpActivePlayer)
   }
 
   def drawCard(): GameManager = {
@@ -142,14 +139,12 @@ case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0,
       tmpPlayerVec = tmpPlayerVec :+ Player(x.name, x.isAnswering, playerHand)
 
     }
-    answerList = answerTmp
-    player = tmpPlayerVec
-    this
+
+    copy(answerList = answerTmp, player = tmpPlayerVec)
   }
 
   def clearRoundAnswers(): GameManager = {
-    roundAnswerCards = Map[Player, String]()
-    this
+    copy(roundAnswerCards = Map[Player, String]())
   }
 
   override def toString: String = {

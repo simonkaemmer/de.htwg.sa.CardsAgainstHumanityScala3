@@ -3,6 +3,8 @@ package module
 
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
+import control.BaseImpl.Controller
+import control.ControllerInterface
 import model.BaseImpl.GameManager
 import model.ModelInterface
 import model.fileIoComponent.FileIOInterface
@@ -13,9 +15,10 @@ class CardsAgainstHumanityModule extends AbstractModule {
 
 
   override def configure(): Unit = {
-    bindConstant().annotatedWith(Names.named("Default")).to(defPlayers)
-    bind(classOf[ModelInterface]).to(classOf[GameManager])
+    bindConstant().annotatedWith(Names.named("Def")).to(defPlayers)
+    bind(classOf[ModelInterface]).toInstance(GameManager())
+
+    bind(classOf[ControllerInterface]).to(classOf[control.BaseImpl.Controller])
     bind(classOf[FileIOInterface]).to(classOf[FileIO])
-    ()
   }
 }

@@ -28,7 +28,7 @@ class GameManagerSpec extends AnyWordSpec  with Matchers{
       gm.player(1).toString shouldBe "Player: Heinz // State: true"
     }
     "create a Carddeck" in {
-      gm.kompositumCard = KompositumCard(List[Card](AnswerCard("hahah"), AnswerCard("Hihihihi"), QuestionCard("Wie bitte _ ?")))
+      gm.copy(kompositumCard = KompositumCard(List[Card](AnswerCard("hahah"), AnswerCard("Hihihihi"), QuestionCard("Wie bitte _ ?"))))
       gm = gm.createCardDeck()
       gm.player.length shouldBe 2
       gm.answerList shouldNot be(Nil)

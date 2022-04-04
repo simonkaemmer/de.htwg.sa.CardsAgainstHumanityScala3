@@ -10,7 +10,7 @@ import utils.UndoManager
 
 import scala.swing.Publisher
 
-class Controller @Inject()(var gameManager: ModelInterface) extends ControllerInterface  with Publisher {
+class Controller @Inject() (var gameManager: ModelInterface) extends ControllerInterface  with Publisher {
 
   var state: ControllerState = PreSetupState(this)
   val undoManager = new UndoManager
