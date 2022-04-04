@@ -7,7 +7,7 @@ import model.{BaseImpl, ModelInterface}
 import scala.util.Random
 
 case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: Int = 0,
-                                  override val numberOfPlayableRounds: Int = 0,
+                                  override val numberOfPlayableRounds: Int = 10,
                                   override val numberOfRounds: Int = 0,
                                   override val activePlayer: Int = 0,
                                   override val kompositumCard: KompositumCard = KompositumCard(List[Card]()),
@@ -20,8 +20,7 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
   override def roundStrat(numberPlayer: Int): GameManager = RoundStrategy.execute(numberPlayer)
 
   def addPlayer(name: String): GameManager = {
-    var playerTmp = player
-    playerTmp = playerTmp :+ Player(name, true, List[AnswerCard]())
+    val playerTmp = player :+ Player(name, true, List[AnswerCard]())
     copy(player = playerTmp)
   }
 
@@ -37,23 +36,17 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     copy(answerList = tmpAnswerList, questionList = tmpQuestionList)
   }
 
-  //override def setKompositum(komp: KompositumCard): GameManager = {copy(kompositumCard = komp)} // Not needed anymore
-
-  //override def getKompositum(): KompositumCard = kompositumCard // Not needed anymore
-
   def handOutCards(): GameManager = {
     val playerCard = choosePlayerStartCards(numberOfPlayers)
     var remainingCards = answerList
-    playerCard.foreach(remove => remainingCards = remainingCards.filterNot(_ == remove))
+    playerCard foreach (remove => remainingCards = answerList.filterNot(_ == remove))
     val tmpPlayerVecList = givePlayerCards(playerCard)
-    println("Vector length : " + player.length)
-
-    println("Vector length : " + tmpPlayerVecList.length)
 
     copy(player = tmpPlayerVecList, answerList = remainingCards)
   }
 
   def givePlayerCards(listOfPlayerCards: List[AnswerCard]): Vector[Player] = {
+
     var tmpPlayerCards = listOfPlayerCards
     var tmpPlayer = Vector[Player]()
     for (x <- player; if tmpPlayerCards.nonEmpty) {
@@ -68,7 +61,8 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     var cardcount = 0
     var remCard = List[AnswerCard]()
     for (x <- value; if cardcount < 7) yield {
-      remCard = remCard :+ x; cardcount += 1
+      remCard = remCard :+ x;
+      cardcount += 1
     }
     remCard
   }
@@ -113,6 +107,10 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
   }
 
   //def getActivePlayer(): Int = activePlayer // Not needed anymore
+
+  //override def setKompositum(komp: KompositumCard): GameManager = {copy(kompositumCard = komp)} // Not needed anymore
+
+  //override def getKompositum(): KompositumCard = kompositumCard // Not needed anymore
 
   def pickNextPlayer(): GameManager = {
    val tmpActivePlayer = (activePlayer + 1) % player.length

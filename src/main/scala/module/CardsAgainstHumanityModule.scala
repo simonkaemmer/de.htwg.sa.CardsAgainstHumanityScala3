@@ -11,7 +11,7 @@ import model.fileIoComponent.FileIOInterface
 import model.fileIoComponent.fileIoJsonImpl.FileIO
 
 class CardsAgainstHumanityModule extends AbstractModule {
-  val defPlayers: Int = 2;
+  val defPlayers: Int = 2
 
 
   override def configure(): Unit = {

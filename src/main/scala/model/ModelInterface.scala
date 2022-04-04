@@ -16,11 +16,7 @@ trait ModelInterface(val numberOfPlayers: Int,
 
   def roundStrat(numberPlayer: Int): GameManager = RoundStrategy.execute(numberPlayer)
 
-  def addPlayer(name: String): ModelInterface
-
   def createCardDeck(): ModelInterface
-
-  //def setKompositum(komp: KompositumCard) : ModelInterface
 
   def handOutCards(): ModelInterface
 
@@ -46,4 +42,7 @@ trait ModelInterface(val numberOfPlayers: Int,
 
   //def getActivePlayer():Int
   //def getKompositum(): KompositumCard
+  //def setKompositum(komp: KompositumCard) : ModelInterface
+
+  def addPlayer(name: String): ModelInterface
 }

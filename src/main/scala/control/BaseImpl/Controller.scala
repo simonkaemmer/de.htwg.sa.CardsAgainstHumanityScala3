@@ -10,7 +10,7 @@ import utils.UndoManager
 
 import scala.swing.Publisher
 
-class Controller @Inject() (var gameManager: ModelInterface) extends ControllerInterface  with Publisher {
+class Controller @Inject() (var gameManager: ModelInterface) extends ControllerInterface with Publisher {
 
   var state: ControllerState = PreSetupState(this)
   val undoManager = new UndoManager
@@ -87,7 +87,6 @@ case class PreSetupState(controller: Controller) extends ControllerState {
       controller.publish(new UpdateGuiEvent)
       //controller.publish(new UpdateTuiEvent)
       controller.nextState()
-
   }
 
   override def getCurrentStateAsString: String = "Willkommen bei Cards Against Humanity \n"
