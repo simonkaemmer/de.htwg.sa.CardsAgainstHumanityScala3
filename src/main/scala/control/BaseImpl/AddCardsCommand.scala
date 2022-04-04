@@ -31,14 +31,14 @@ class AddCardsCommand(cardText: String, controller: ControllerInterface) extends
     }
 
     val kompCard = KompositumCard(tempList)
-    controller.getGameManager.setKompositum(kompCard)
+    controller.getGameManager.copy(kompositumCard = kompCard)
     //println("bahas hinzugefügt" + controller.getGameManager.getKompositum().cardList.toString())
     ()
   }
 
   override def undoStep: Unit = {
 
-      controller.getGameManager.setKompositum(KompositumCard(undoKompositum))
+      controller.getGameManager.copy(kompositumCard = KompositumCard(undoKompositum))
       ()
   }
 

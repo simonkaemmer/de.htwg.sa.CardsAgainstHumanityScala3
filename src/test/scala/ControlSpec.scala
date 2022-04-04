@@ -16,7 +16,7 @@ class ControlSpec extends AnyWordSpec with Matchers with GivenWhenThen {
     }*/
    // controller.add(observer)
       "test Strategy"in{
-        controller.gameManager = controller.gameManager.setPlayersAndRounds(2)
+        controller.gameManager = controller.gameManager.roundStrat(2)
         controller.getGameManager.numberOfPlayers.shouldBe(2)
         controller.getGameManager.numberOfPlayableRounds.shouldBe(0)
       }

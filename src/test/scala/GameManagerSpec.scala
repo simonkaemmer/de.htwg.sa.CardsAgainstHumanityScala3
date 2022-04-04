@@ -19,7 +19,7 @@ class GameManagerSpec extends AnyWordSpec  with Matchers{
       gm.roundQuestion shouldBe ""
     }
     "have players" in {
-      gm = gm.setPlayersAndRounds(2)
+      gm = gm.roundStrat(2)
       gm = gm.addPlayer("Hugo")
       gm = gm.addPlayer("Heinz")
 
@@ -50,7 +50,7 @@ class GameManagerSpec extends AnyWordSpec  with Matchers{
       gm.roundAnswerCards shouldNot be (null)
     }
     "should return the active player" in {
-      gm.getActivePlayer() shouldBe 0
+      gm.activePlayer shouldBe 0
     }
     "should pick the next player" in {
       gm = gm.pickNextPlayer()

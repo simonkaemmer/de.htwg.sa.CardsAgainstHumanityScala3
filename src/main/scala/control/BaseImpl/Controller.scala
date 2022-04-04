@@ -81,7 +81,7 @@ case class PreSetupState(controller: Controller) extends ControllerState {
   println("PreSetupState")
 
   override def evaluate(input: String): Unit = {
-      controller.gameManager = controller.gameManager.setPlayersAndRounds(input.toInt)
+      controller.gameManager = controller.gameManager.roundStrat(input.toInt)
       controller.gameManager = controller.fileMan.load(controller.gameManager)
       controller.changePage(2)
       controller.publish(new UpdateGuiEvent)
@@ -100,7 +100,7 @@ case class PreSetupState(controller: Controller) extends ControllerState {
 case class AddCardsQuest(controller: Controller) extends ControllerState {
 
   println("AddCardsQuest")
-  println(controller.gameManager.getKompositum().cardList)
+  println(controller.gameManager.kompositumCard.cardList)
 
   //controller.publish(new UpdateTuiEvent)
   controller.publish(new UpdateGuiEvent)
@@ -123,7 +123,7 @@ case class AddCardsQuest(controller: Controller) extends ControllerState {
 case class SetupState(controller: Controller) extends ControllerState {
 
   println("SetupState")
-  println(controller.gameManager.getKompositum().cardList)
+  println(controller.gameManager.kompositumCard.cardList)
 
   override def evaluate(input: String): Unit = {
 
@@ -135,7 +135,7 @@ case class SetupState(controller: Controller) extends ControllerState {
 
     controller.gameManager = controller.gameManager.addPlayer(input)
     if (controller.getGameManager.player.length == controller.getGameManager.numberOfPlayers) {
-      println("Aus: " + controller.gameManager.getKompositum().cardList)
+      println("Aus: " + controller.gameManager.kompositumCard.cardList)
       controller.gameManager = controller.gameManager.createCardDeck()
       controller.gameManager = controller.gameManager.handOutCards()
       controller.nextState()
@@ -166,7 +166,7 @@ case class AnswerState(controller: Controller) extends ControllerState {
         controller.publish(new UpdateTuiEvent)
         controller.nextState()
       }
-      val activePlayer = controller.gameManager.getActivePlayer()
+      val activePlayer = controller.gameManager.activePlayer
       if (input.toInt >= 0 && input.toInt < controller.getGameManager.player(activePlayer).playerCards.length) {
         controller.gameManager = controller.gameManager.placeCard(activePlayer, controller.getGameManager.player(activePlayer).playerCards(input.toInt))
         controller.gameManager = controller.gameManager.pickNextPlayer()

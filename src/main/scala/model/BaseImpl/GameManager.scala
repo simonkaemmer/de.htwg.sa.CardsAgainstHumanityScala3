@@ -6,26 +6,24 @@ import model.{BaseImpl, ModelInterface}
 
 import scala.util.Random
 
-case class GameManager @Inject() (@Named("Def") numberOfPlayers: Int = 0,
-                                  numberOfPlayableRounds: Int = 0,
-                                  numberOfRounds: Int = 0,
-                                  activePlayer: Int = 0,
-                                  kompositumCard: KompositumCard = KompositumCard(List[Card]()),
-                                  player: Vector[Player] = Vector(),
-                                  answerList: List[AnswerCard] = List(),
-                                  questionList: List[QuestionCard] = List(),
-                                  roundAnswerCards: Map[Player, String] = Map[Player, String](),
-                                  roundQuestion: String = ""   ) extends ModelInterface {
+case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: Int = 0,
+                                  override val numberOfPlayableRounds: Int = 0,
+                                  override val numberOfRounds: Int = 0,
+                                  override val activePlayer: Int = 0,
+                                  override val kompositumCard: KompositumCard = KompositumCard(List[Card]()),
+                                  override val player: Vector[Player] = Vector(),
+                                  override val answerList: List[AnswerCard] = List(),
+                                  override val questionList: List[QuestionCard] = List(),
+                                  override val roundAnswerCards: Map[Player, String] = Map[Player, String](),
+                                  override val roundQuestion: String = "") extends ModelInterface(numberOfPlayers, numberOfPlayableRounds, numberOfRounds, activePlayer, kompositumCard, player, answerList, questionList, roundAnswerCards, roundQuestion) {
 
-  override def setPlayersAndRounds(numberPlayer: Int): GameManager = RoundStrategy.execute(numberPlayer)
+  override def roundStrat(numberPlayer: Int): GameManager = RoundStrategy.execute(numberPlayer)
 
   def addPlayer(name: String): GameManager = {
     var playerTmp = player
     playerTmp = playerTmp :+ Player(name, true, List[AnswerCard]())
     copy(player = playerTmp)
   }
-
-  def gameManagerG(): GameManager = this
 
   def createCardDeck(): GameManager = {
     var tmpAnswerList = answerList
@@ -39,12 +37,9 @@ case class GameManager @Inject() (@Named("Def") numberOfPlayers: Int = 0,
     copy(answerList = tmpAnswerList, questionList = tmpQuestionList)
   }
 
-  override def setKompositum(komp: KompositumCard): GameManager = {
+  //override def setKompositum(komp: KompositumCard): GameManager = {copy(kompositumCard = komp)} // Not needed anymore
 
-    copy(kompositumCard = komp)
-  }
-
-  override def getKompositum(): KompositumCard = kompositumCard
+  //override def getKompositum(): KompositumCard = kompositumCard // Not needed anymore
 
   def handOutCards(): GameManager = {
     val playerCard = choosePlayerStartCards(numberOfPlayers)
@@ -117,7 +112,7 @@ case class GameManager @Inject() (@Named("Def") numberOfPlayers: Int = 0,
     copy(player = tmpPlayerVecList, roundAnswerCards = tmpPlacedCardMap)
   }
 
-  def getActivePlayer(): Int = activePlayer
+  //def getActivePlayer(): Int = activePlayer // Not needed anymore
 
   def pickNextPlayer(): GameManager = {
    val tmpActivePlayer = (activePlayer + 1) % player.length
@@ -137,7 +132,6 @@ case class GameManager @Inject() (@Named("Def") numberOfPlayers: Int = 0,
       var playerHand = x.playerCards
       playerHand = playerHand :+ result
       tmpPlayerVec = tmpPlayerVec :+ Player(x.name, x.isAnswering, playerHand)
-
     }
 
     copy(answerList = answerTmp, player = tmpPlayerVec)
@@ -159,6 +153,7 @@ case class GameManager @Inject() (@Named("Def") numberOfPlayers: Int = 0,
 
     sb.toString()
   }
+  def gameManagerG(): GameManager = this
 }
 
 object GameManager{
