@@ -39,7 +39,6 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
     state.evaluate(input)
   }
 
-
   def stateAsString(): String = {
     state match {
       case _: PreSetupState => "PreSetupGame"
@@ -49,9 +48,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
     }
   }
 
-  def getCurrentStateAsString: String = {
-    state.getCurrentStateAsString
-  }
+  def getCurrentStateAsString: String = {state.stateString}
 
 
   def undo(): Unit = {
@@ -71,14 +68,12 @@ trait ControllerState {
 
   def evaluate(input: String): Unit
 
-  def getCurrentStateAsString: String
+  def stateString: String
 
   def nextState: ControllerState
 }
 
 case class PreSetupState(controller: Controller) extends ControllerState {
-
-  println("PreSetupState")
 
   override def evaluate(input: String): Unit = {
       controller.gameManager = controller.gameManager.roundStrat(input.toInt)
@@ -89,7 +84,7 @@ case class PreSetupState(controller: Controller) extends ControllerState {
       controller.nextState()
   }
 
-  override def getCurrentStateAsString: String = "Willkommen bei Cards Against Humanity \n"
+  override def stateString: String = "Willkommen bei Cards Against Humanity \n"
 
   override def nextState: ControllerState = AddCardsQuest(controller)
 
@@ -114,7 +109,7 @@ case class AddCardsQuest(controller: Controller) extends ControllerState {
     }
   }
 
-  override def getCurrentStateAsString: String = "AddCardState"
+  override def stateString: String = "AddCardState"
 
   override def nextState: ControllerState = SetupState(controller)
 }
@@ -143,7 +138,7 @@ case class SetupState(controller: Controller) extends ControllerState {
     }
   }
 
-  override def getCurrentStateAsString: String = "SetupState"
+  override def stateString: String = "SetupState"
 
   override def nextState: ControllerState = AnswerState(controller)
 }
@@ -179,7 +174,7 @@ case class AnswerState(controller: Controller) extends ControllerState {
       controller.nextState()
   }
 
-  override def getCurrentStateAsString: String = controller.getGameManager.roundQuestion
+  override def stateString: String = controller.getGameManager.roundQuestion
 
   override def nextState: ControllerState = {
     if(controller.getGameManager.numberOfRounds > controller.getGameManager.numberOfPlayableRounds) {
@@ -191,7 +186,7 @@ case class AnswerState(controller: Controller) extends ControllerState {
 case class FinishState(controller: Controller) extends ControllerState {
   override def evaluate(input: String): Unit = ()
 
-  override def getCurrentStateAsString: String = "Please write q to exit the game"
+  override def stateString: String = "Please write q to exit the game"
 
   override def nextState: ControllerState = this
 

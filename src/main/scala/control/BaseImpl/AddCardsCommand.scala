@@ -14,11 +14,11 @@ class AddCardsCommand(cardText: String, controller: ControllerInterface) extends
       var doubleCheck : Boolean = true;
       undoKompositum = tempList
 
-    for(x <- tempList) {
-      if(x.toString.equals(cardText)) {
-        doubleCheck = false
+      for(x <- tempList) {
+        if(x.toString.equals(cardText)) {
+          doubleCheck = false
+        }
       }
-    }
 
     if(doubleCheck) {
       if(cardText.contains("_")) {

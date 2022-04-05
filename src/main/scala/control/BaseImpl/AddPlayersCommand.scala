@@ -12,7 +12,7 @@ class AddPlayersCommand(name: String, controller: ControllerInterface) extends C
     playerTmp = playerTmp :+ Player(name, true, List[AnswerCard]())
     //controller.getGameManager.player = playerTmp
 
-    controller.getGameManager.copy(player = playerTmp)
+    controller.getGameManager.gameManagerG().copy(player = playerTmp)
   }
 
   override def undoStep: Unit = {

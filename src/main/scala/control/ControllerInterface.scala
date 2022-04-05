@@ -1,5 +1,10 @@
 package control
+import com.google.inject.Injector
+import control.BaseImpl.ControllerState
 import model.BaseImpl.GameManager
+import model.ModelInterface
+import model.fileIoComponent.fileIoJsonImpl.FileIO
+import utils.UndoManager
 
 import scala.swing.Publisher
 
@@ -9,11 +14,11 @@ trait ControllerInterface extends Publisher{
   def changePage(page: Int): Unit
   def eval(input: String): Unit
   def stateAsString(): String
-  def getCurrentStateAsString: String
   def undo(): Unit
   def redo(): Unit
   def load(): Unit
   def save(): Unit
+  def getCurrentStateAsString: String
   def getGameManager: GameManager
 }
 
