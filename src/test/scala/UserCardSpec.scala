@@ -1,3 +1,4 @@
+
 import model.BaseImpl.{AnswerCard, KompositumCard, QuestionCard}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
@@ -37,7 +38,7 @@ class UserCardSpec extends AnyWordSpec  with Matchers {
         kompCard.cardList.length shouldBe(2)
       }
       "print its text" in {
-        kompCard.printCard
+        kompCard.printCard()
       }
       "Should have 1 left after remove" in {
       kompCard = kompCard.removeCard(userAnswerOne)

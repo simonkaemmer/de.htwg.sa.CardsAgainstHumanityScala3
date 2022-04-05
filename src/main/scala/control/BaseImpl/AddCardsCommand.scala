@@ -21,7 +21,6 @@ class AddCardsCommand(cardText: String, controller: ControllerInterface) extends
     }
 
     if(doubleCheck) {
-
       if(cardText.contains("_")) {
         tempList = tempList :+ QuestionCard(cardText)
         //println("Question hinzugefügt" + tempList)
