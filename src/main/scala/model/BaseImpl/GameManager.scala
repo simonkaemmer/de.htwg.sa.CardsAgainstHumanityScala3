@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import com.google.inject.name.Named
 import model.{BaseImpl, ModelInterface}
 
+import scala.language.postfixOps
 import scala.util.Random
 
 case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: Int = 0,
@@ -79,18 +80,14 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
   }
 
   def placeQuestionCard(): GameManager = {
-    var removedQuestList = questionList
-    removedQuestList = Random.shuffle(removedQuestList)
+    val removedQuestList = Random.shuffle(questionList)
     val quest = removedQuestList.head
-    var tmpRounds = numberOfRounds
-    tmpRounds = tmpRounds + 1
-
-    copy(questionList = removedQuestList.filterNot(_== quest), roundQuestion = quest.question, numberOfRounds = tmpRounds)
+    copy(questionList = removedQuestList.filterNot(_== quest), roundQuestion = quest.question, numberOfRounds = incr(numberOfRounds))
   }
 
   def placeCard(activePlayer: Int, card: AnswerCard): GameManager = {
-    var tmpPlacedCardMap = Map[Player, String]()
 
+    var tmpPlacedCardMap = Map[Player, String]()
     if (roundAnswerCards != null)
       tmpPlacedCardMap = roundAnswerCards
 
@@ -106,15 +103,8 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     copy(player = tmpPlayerVecList, roundAnswerCards = tmpPlacedCardMap)
   }
 
-  //def getActivePlayer(): Int = activePlayer // Not needed anymore
-
-  //override def setKompositum(komp: KompositumCard): GameManager = {copy(kompositumCard = komp)} // Not needed anymore
-
-  //override def getKompositum(): KompositumCard = kompositumCard // Not needed anymore
-
   def pickNextPlayer(): GameManager = {
-   val tmpActivePlayer = (activePlayer + 1) % player.length
-
+    val tmpActivePlayer = (activePlayer + 1) % player.length
     copy(activePlayer = tmpActivePlayer)
   }
 
@@ -139,19 +129,35 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     copy(roundAnswerCards = Map[Player, String]())
   }
 
+  def gameManagerG(): GameManager = copy()
+
   override def toString: String = {
     val sb = new StringBuilder
     sb ++= "Aktive Antwort Karten: " + answerList.toString() + "\n"
     sb ++= "Aktive Frage Karten: " + questionList.toString() + "\n"
     sb ++= "Aktuelle Frage Karte: " + roundQuestion + "\n"
     sb ++= "Gelegten Antwort Karten: " + roundAnswerCards.toString() + "\n"
+
+    /*
     for (i <- player.indices) {
       sb ++= "Die karten des Spielers: " + player(i).name + "  Seine Karten:" + player(i).playerCards + "\n"
     }
+    */
 
+    player.indices foreach( i => sb ++= "Die Karten des Spielers: " + player(i).name + " Seine Karten:" + player(i).playerCards + "\n")
     sb.toString()
   }
-  def gameManagerG(): GameManager = this
+
+
+  //def getActivePlayer(): Int = activePlayer // Not needed anymore
+
+  //override def setKompositum(komp: KompositumCard): GameManager = {copy(kompositumCard = komp)} // Not needed anymore
+
+  //override def getKompositum(): KompositumCard = kompositumCard // Not needed anymore
+
+  // Helper functions
+
+  def incr(x: Int): Int = x + 1
 }
 
 object GameManager{
