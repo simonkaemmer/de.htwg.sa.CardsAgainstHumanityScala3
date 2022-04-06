@@ -12,7 +12,7 @@ trait  Card {
   def toXML: Node
 }
 
-case class KompositumCard @Inject()(cardList:List[Card]) extends Card {
+case class KompositumCard @Inject()(cardList:List[Card]) extends Card:
 
   override def printCard(): Unit = {
     cardList.foreach((c:Card)=>{
@@ -43,5 +43,4 @@ case class KompositumCard @Inject()(cardList:List[Card]) extends Card {
   override def removeCard(card:Card): KompositumCard = {copy(cardList.filterNot(_ == card))}
 
   override def toXML: Node = {<ERROR></ERROR>}
-}
 

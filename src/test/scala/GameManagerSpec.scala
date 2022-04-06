@@ -19,7 +19,7 @@ class GameManagerSpec extends AnyWordSpec  with Matchers{
       gm.roundQuestion shouldBe ""
     }
     "have players" in {
-      gm = gm.setPlayersAndRounds(2)
+      gm = gm.roundStrat(2)
       gm = gm.addPlayer("Hugo")
       gm = gm.addPlayer("Heinz")
 
@@ -28,7 +28,7 @@ class GameManagerSpec extends AnyWordSpec  with Matchers{
       gm.player(1).toString shouldBe "Player: Heinz // State: true"
     }
     "create a Carddeck" in {
-      gm.kompositumCard = KompositumCard(List[Card](AnswerCard("hahah"), AnswerCard("Hihihihi"), QuestionCard("Wie bitte _ ?")))
+      gm.copy(kompositumCard = KompositumCard(List[Card](AnswerCard("hahah"), AnswerCard("Hihihihi"), QuestionCard("Wie bitte _ ?"))))
       gm = gm.createCardDeck()
       gm.player.length shouldBe 2
       gm.answerList shouldNot be(Nil)
@@ -50,7 +50,7 @@ class GameManagerSpec extends AnyWordSpec  with Matchers{
       gm.roundAnswerCards shouldNot be (null)
     }
     "should return the active player" in {
-      gm.getActivePlayer() shouldBe 0
+      gm.activePlayer shouldBe 0
     }
     "should pick the next player" in {
       gm = gm.pickNextPlayer()

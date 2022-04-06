@@ -1,17 +1,22 @@
 package model
 
-import model.BaseImpl.{AnswerCard, GameManager, KompositumCard, Player, RoundStrategy}
-trait ModelInterface {
+import model.BaseImpl.{AnswerCard, Card, GameManager, KompositumCard, Player, QuestionCard, RoundStrategy}
 
-  def setPlayersAndRounds(numberPlayer: Int): GameManager = RoundStrategy.execute(numberPlayer)
 
-  def addPlayer(name: String): ModelInterface
+trait ModelInterface(val numberOfPlayers: Int,
+                     val numberOfPlayableRounds: Int,
+                     val numberOfRounds: Int,
+                     val activePlayer: Int,
+                     val kompositumCard: KompositumCard,
+                     val player: Vector[Player],
+                     val answerList: List[AnswerCard],
+                     val questionList: List[QuestionCard],
+                     val roundAnswerCards: Map[Player, String],
+                     val roundQuestion: String) {
+
+  def roundStrat(numberPlayer: Int): GameManager = RoundStrategy.execute(numberPlayer)
 
   def createCardDeck(): ModelInterface
-
-  def setKompositum(komp: KompositumCard) : ModelInterface
-
-  def getKompositum(): KompositumCard
 
   def handOutCards(): ModelInterface
 
@@ -25,8 +30,6 @@ trait ModelInterface {
 
   def placeCard(activePlayer: Int, card: AnswerCard): ModelInterface
 
-  def getActivePlayer():Int
-
   def pickNextPlayer(): ModelInterface
 
   def drawCard(): ModelInterface
@@ -36,4 +39,10 @@ trait ModelInterface {
   def gameManagerG() : GameManager
 
   def toString: String
+
+  //def getActivePlayer():Int
+  //def getKompositum(): KompositumCard
+  //def setKompositum(komp: KompositumCard) : ModelInterface
+
+  def addPlayer(name: String): ModelInterface
 }

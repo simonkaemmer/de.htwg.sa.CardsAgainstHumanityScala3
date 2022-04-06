@@ -14,11 +14,11 @@ class AddCardsCommand(cardText: String, controller: ControllerInterface) extends
       var doubleCheck : Boolean = true;
       undoKompositum = tempList
 
-    for(x <- tempList) {
-      if(x.toString.equals(cardText)) {
-        doubleCheck = false
+      for(x <- tempList) {
+        if(x.toString.equals(cardText)) {
+          doubleCheck = false
+        }
       }
-    }
 
     if(doubleCheck) {
       if(cardText.contains("_")) {
@@ -31,14 +31,14 @@ class AddCardsCommand(cardText: String, controller: ControllerInterface) extends
     }
 
     val kompCard = KompositumCard(tempList)
-    controller.getGameManager.setKompositum(kompCard)
+    controller.getGameManager.copy(kompositumCard = kompCard)
     //println("bahas hinzugefügt" + controller.getGameManager.getKompositum().cardList.toString())
     ()
   }
 
   override def undoStep: Unit = {
 
-      controller.getGameManager.setKompositum(KompositumCard(undoKompositum))
+      controller.getGameManager.copy(kompositumCard = KompositumCard(undoKompositum))
       ()
   }
 

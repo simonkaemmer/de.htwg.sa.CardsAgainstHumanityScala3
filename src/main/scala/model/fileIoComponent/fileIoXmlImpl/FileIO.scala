@@ -24,12 +24,12 @@ class FileIO extends FileIOInterface {
     }
 
     val kompCards = KompositumCard(list)
-    gameManager.setKompositum(kompCards)
+    gameManager.gameManagerG().copy(kompositumCard = kompCards)
   }
 
   override def save(gameMan: ModelInterface): Unit = {
     val pw = new PrintWriter(new File("CardStack.xml"))
-    val cards = <CardStack>{gameMan.getKompositum().cardList.map(p => p.toXML)}</CardStack>
+    val cards = <CardStack>{gameMan.kompositumCard.cardList.map(p => p.toXML)}</CardStack>
     pw.write(cards.toString())
     pw.close()
   }

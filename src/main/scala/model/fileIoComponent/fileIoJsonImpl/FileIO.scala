@@ -24,8 +24,7 @@ class FileIO extends FileIOInterface {
       }
     }
     val kompCards = KompositumCard(tempList)
-    gameMan.setKompositum(kompCards)
-
+    gameMan.gameManagerG().copy(kompositumCard = kompCards)
   }
 
   override def save(game: ModelInterface): Unit = {
@@ -37,7 +36,7 @@ class FileIO extends FileIOInterface {
 
   def cardsStackToJson(game: ModelInterface): JsObject = {
     Json.obj(
-      "cardList" -> Json.toJson(for{x <- game.getKompositum().cardList} yield {
+      "cardList" -> Json.toJson(for{x <- game.kompositumCard.cardList} yield {
         Json.obj("card" -> JsString(x.toString))})
     )
   }

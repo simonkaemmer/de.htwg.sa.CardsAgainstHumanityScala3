@@ -4,30 +4,26 @@ import com.google.inject.Inject
 import com.google.inject.name.Named
 import model.{BaseImpl, ModelInterface}
 
+import scala.language.postfixOps
 import scala.util.Random
 
-case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0) extends ModelInterface {
+case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: Int = 0,
+                                  override val numberOfPlayableRounds: Int = 10,
+                                  override val numberOfRounds: Int = 0,
+                                  override val activePlayer: Int = 0,
+                                  override val kompositumCard: KompositumCard = KompositumCard(List[Card]()),
+                                  override val player: Vector[Player] = Vector(),
+                                  override val answerList: List[AnswerCard] = List(),
+                                  override val questionList: List[QuestionCard] = List(),
+                                  override val roundAnswerCards: Map[Player, String] = Map[Player, String](),
+                                  override val roundQuestion: String = "") extends ModelInterface(numberOfPlayers, numberOfPlayableRounds, numberOfRounds, activePlayer, kompositumCard, player, answerList, questionList, roundAnswerCards, roundQuestion):
 
-  var numberOfPlayableRounds: Int = 0
-  var numberOfRounds: Int = 0
-  var activePlayer: Int = 0
-  var kompositumCard: KompositumCard = KompositumCard(List[Card]())
-  var player: Vector[Player] = Vector[Player]()
-  var answerList: List[AnswerCard] = List[AnswerCard]()
-  var questionList: List[QuestionCard] = List[QuestionCard]()
-  var roundAnswerCards: Map[Player, String] = Map[Player, String]()
-  var roundQuestion: String = ""
-
-  override def setPlayersAndRounds(numberPlayer: Int): GameManager = RoundStrategy.execute(numberPlayer)
+  override def roundStrat(numberPlayer: Int): GameManager = RoundStrategy.execute(numberPlayer)
 
   def addPlayer(name: String): GameManager = {
-    var playerTmp = player
-    playerTmp = playerTmp :+ Player(name, true, List[AnswerCard]())
-    player = playerTmp
-    this
+    val playerTmp = player :+ Player(name, true, List[AnswerCard]())
+    copy(player = playerTmp)
   }
-
-  def gameManagerG(): GameManager = this
 
   def createCardDeck(): GameManager = {
     var tmpAnswerList = answerList
@@ -38,33 +34,20 @@ case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0) ex
         case _: AnswerCard => tmpAnswerList = tmpAnswerList :+ (x.asInstanceOf[AnswerCard])
       }
     }
-    answerList = tmpAnswerList
-    questionList = tmpQuestionList
-    this
+    copy(answerList = tmpAnswerList, questionList = tmpQuestionList)
   }
-
-  override def setKompositum(komp: KompositumCard): GameManager = {
-
-    kompositumCard = komp
-    this
-  }
-
-  override def getKompositum(): KompositumCard = kompositumCard
 
   def handOutCards(): GameManager = {
     val playerCard = choosePlayerStartCards(numberOfPlayers)
     var remainingCards = answerList
-    playerCard.foreach(remove => remainingCards = remainingCards.filterNot(_ == remove))
+    playerCard foreach (remove => remainingCards = answerList.filterNot(_ == remove))
     val tmpPlayerVecList = givePlayerCards(playerCard)
-    println("Vector length : " + player.length)
 
-    println("Vector length : " + tmpPlayerVecList.length)
-    player = tmpPlayerVecList
-    answerList = remainingCards
-    this
+    copy(player = tmpPlayerVecList, answerList = remainingCards)
   }
 
   def givePlayerCards(listOfPlayerCards: List[AnswerCard]): Vector[Player] = {
+
     var tmpPlayerCards = listOfPlayerCards
     var tmpPlayer = Vector[Player]()
     for (x <- player; if tmpPlayerCards.nonEmpty) {
@@ -79,7 +62,8 @@ case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0) ex
     var cardcount = 0
     var remCard = List[AnswerCard]()
     for (x <- value; if cardcount < 7) yield {
-      remCard = remCard :+ x; cardcount += 1
+      remCard = remCard :+ x;
+      cardcount += 1
     }
     remCard
   }
@@ -96,20 +80,14 @@ case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0) ex
   }
 
   def placeQuestionCard(): GameManager = {
-    var removedQuestList = questionList
-    removedQuestList = Random.shuffle(removedQuestList)
+    val removedQuestList = Random.shuffle(questionList)
     val quest = removedQuestList.head
-    var tmpRounds = numberOfRounds
-    tmpRounds = tmpRounds + 1
-    questionList = removedQuestList.filterNot(_ == quest)
-    roundQuestion = quest.question
-    numberOfRounds = tmpRounds
-    this
+    copy(questionList = removedQuestList.filterNot(_== quest), roundQuestion = quest.question, numberOfRounds = incr(numberOfRounds))
   }
 
   def placeCard(activePlayer: Int, card: AnswerCard): GameManager = {
-    var tmpPlacedCardMap = Map[Player, String]()
 
+    var tmpPlacedCardMap = Map[Player, String]()
     if (roundAnswerCards != null)
       tmpPlacedCardMap = roundAnswerCards
 
@@ -122,18 +100,12 @@ case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0) ex
     var tmpPlayerVecList = player
     tmpPlayerVecList = tmpPlayerVecList.updated(activePlayer, Player(player(activePlayer).name, true, newPlayerHand))
 
-    player = tmpPlayerVecList
-    roundAnswerCards = tmpPlacedCardMap
-
-    this
+    copy(player = tmpPlayerVecList, roundAnswerCards = tmpPlacedCardMap)
   }
 
-  def getActivePlayer(): Int = activePlayer
-
   def pickNextPlayer(): GameManager = {
-    activePlayer = (activePlayer + 1) % player.length
-
-    this
+    val tmpActivePlayer = (activePlayer + 1) % player.length
+    copy(activePlayer = tmpActivePlayer)
   }
 
   def drawCard(): GameManager = {
@@ -148,17 +120,16 @@ case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0) ex
       var playerHand = x.playerCards
       playerHand = playerHand :+ result
       tmpPlayerVec = tmpPlayerVec :+ Player(x.name, x.isAnswering, playerHand)
-
     }
-    answerList = answerTmp
-    player = tmpPlayerVec
-    this
+
+    copy(answerList = answerTmp, player = tmpPlayerVec)
   }
 
   def clearRoundAnswers(): GameManager = {
-    roundAnswerCards = Map[Player, String]()
-    this
+    copy(roundAnswerCards = Map[Player, String]())
   }
+
+  def gameManagerG(): GameManager = copy()
 
   override def toString: String = {
     val sb = new StringBuilder
@@ -166,13 +137,27 @@ case class GameManager @Inject() (@Named("Default") numberOfPlayers: Int = 0) ex
     sb ++= "Aktive Frage Karten: " + questionList.toString() + "\n"
     sb ++= "Aktuelle Frage Karte: " + roundQuestion + "\n"
     sb ++= "Gelegten Antwort Karten: " + roundAnswerCards.toString() + "\n"
+
+    /*
     for (i <- player.indices) {
       sb ++= "Die karten des Spielers: " + player(i).name + "  Seine Karten:" + player(i).playerCards + "\n"
     }
+    */
 
+    player.indices foreach( i => sb ++= "Die Karten des Spielers: " + player(i).name + " Seine Karten:" + player(i).playerCards + "\n")
     sb.toString()
   }
-}
+
+
+  //def getActivePlayer(): Int = activePlayer // Not needed anymore
+
+  //override def setKompositum(komp: KompositumCard): GameManager = {copy(kompositumCard = komp)} // Not needed anymore
+
+  //override def getKompositum(): KompositumCard = kompositumCard // Not needed anymore
+
+  // Helper functions
+
+  def incr(x: Int): Int = x + 1
 
 object GameManager{
 

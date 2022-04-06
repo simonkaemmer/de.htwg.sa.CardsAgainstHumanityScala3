@@ -16,7 +16,7 @@ class playerDialog(controller: ControllerInterface, infobar: InfoBar) extends Di
   peer.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
 
   val playerTf = new TextField("Spieler")
-  val weiterButton = new Button("-->")
+  val weiterButton = new Button("weiter")
   val undoButton = new Button("undo")
   val infoTf = new TextField("") {
     editable = false
