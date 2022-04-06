@@ -16,7 +16,7 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
                                   override val answerList: List[AnswerCard] = List(),
                                   override val questionList: List[QuestionCard] = List(),
                                   override val roundAnswerCards: Map[Player, String] = Map[Player, String](),
-                                  override val roundQuestion: String = "") extends ModelInterface(numberOfPlayers, numberOfPlayableRounds, numberOfRounds, activePlayer, kompositumCard, player, answerList, questionList, roundAnswerCards, roundQuestion) {
+                                  override val roundQuestion: String = "") extends ModelInterface(numberOfPlayers, numberOfPlayableRounds, numberOfRounds, activePlayer, kompositumCard, player, answerList, questionList, roundAnswerCards, roundQuestion):
 
   override def roundStrat(numberPlayer: Int): GameManager = RoundStrategy.execute(numberPlayer)
 
@@ -158,7 +158,6 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
   // Helper functions
 
   def incr(x: Int): Int = x + 1
-}
 
 object GameManager{
 
