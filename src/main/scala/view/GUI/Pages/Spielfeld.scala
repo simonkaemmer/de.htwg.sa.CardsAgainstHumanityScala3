@@ -78,7 +78,7 @@ class Spielfeld(controller: ControllerInterface, infoBar: InfoBar) extends Borde
       var tmpList = List[String]()
       controller.getGameManager.roundAnswerCards.foreach(x => tmpList = tmpList :+ "Spieler " + x._1.name + " hat " + x._2)
       beantwortete = new ListView[String](tmpList)
-      beantwortete.background = Color.BLACK
+      beantwortete.background = Color.GREEN
       beantwortete.foreground = Color.WHITE
       panelRechts.revalidate()
       panelRechts.repaint()
