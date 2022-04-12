@@ -1,7 +1,6 @@
 package model.BaseImpl
 
-case class
-Player(name:String, isAnswering:Boolean, playerCards:List[AnswerCard]):
+case class Player(name:String, isAnswering:Boolean, playerCards:List[AnswerCard]):
 
   override def toString: String = {"Player: " + this.name + " // State: " + this.isAnswering}
 
@@ -12,6 +11,7 @@ Player(name:String, isAnswering:Boolean, playerCards:List[AnswerCard]):
     copy(name,true,immutableAnswerList)
   }
   def getStatus: Boolean = {isAnswering}
+  
   def changeState: Player = {
     copy(this.name, !this.isAnswering)
   }
