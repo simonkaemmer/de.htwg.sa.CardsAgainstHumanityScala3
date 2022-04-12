@@ -28,7 +28,7 @@ class FileIO extends FileIOInterface:
     gameMan.gameManagerG().copy(kompositumCard = kompCards)
   }
 
-  override def save(game: ModelInterface): Unit = {
+  override def save(game: ModelInterface): Try[Unit] = Try {
     import java.io._
     val pw = new PrintWriter(new File("CardStack.json"))
     pw.write(Json.prettyPrint(cardsStackToJson(game)))

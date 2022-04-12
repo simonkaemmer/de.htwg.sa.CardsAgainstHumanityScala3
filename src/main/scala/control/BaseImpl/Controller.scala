@@ -30,7 +30,13 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
         print("Failed")
 
   def save(): Unit = {
-    fileMan.save(gameManager)
+    fileMan.save(gameManager) match {
+      case Success(_) =>
+        print("Sucess")
+      case Failure(e) =>
+        state = state.failState
+        print("Failed")
+    }
   }
 
   def changePage(page: Int): Unit = {
