@@ -1,13 +1,14 @@
 package control.BaseImpl
 
 import com.google.inject.{Guice, Inject, Injector}
-import control._
+import control.*
 import model.BaseImpl.GameManager
 import model.ModelInterface
 import model.fileIoComponent.fileIoJsonImpl.FileIO
 import module.CardsAgainstHumanityModule
 import utils.UndoManager
 
+import scala.util.{Failure, Success, Try}
 import scala.swing.Publisher
 
 class Controller @Inject() (var gameManager: ModelInterface) extends ControllerInterface with Publisher {
@@ -19,9 +20,14 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
 
   def nextState(): Unit = state = state.nextState
 
-  def load(): Unit = {
-    gameManager = fileMan.load(gameManager)
-  }
+  def load(): Unit =
+    val result = fileMan.load(gameManager)
+    result match
+      case Success(value) =>
+        gameManager = value.gameManagerG()
+      case _ =>
+        state = state.failState
+        print("Failed")
 
   def save(): Unit = {
     fileMan.save(gameManager)
@@ -77,12 +83,14 @@ case class PreSetupState(controller: Controller) extends ControllerState {
 
   override def evaluate(input: String): Unit = {
       controller.gameManager = controller.gameManager.roundStrat(input.toInt)
-      controller.gameManager = controller.fileMan.load(controller.gameManager)
+      controller.load()
       controller.changePage(2)
       controller.publish(new UpdateGuiEvent)
       //controller.publish(new UpdateTuiEvent)
       controller.nextState()
   }
+
+/*  controller.gameManager = controller.fileMan.load(controller.gameManager).get*/
 
   override def stateString: String = "Willkommen bei Cards Against Humanity \n"
 
@@ -146,7 +154,6 @@ case class SetupState(controller: Controller) extends ControllerState {
 case class AnswerState(controller: Controller) extends ControllerState {
 
   override def evaluate(input: String): Unit = {
-
     if(input== "" || controller.getGameManager.roundAnswerCards.size == controller.getGameManager.player.length) {
       controller.gameManager = controller.gameManager.clearRoundAnswers()
       controller.gameManager = controller.gameManager.placeQuestionCard()

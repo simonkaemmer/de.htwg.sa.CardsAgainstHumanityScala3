@@ -6,10 +6,11 @@ import model.BaseImpl.{AnswerCard, Card, KompositumCard, QuestionCard}
 import model.ModelInterface
 import model.fileIoComponent.FileIOInterface
 import scala.xml._
+import scala.util.Try
 
-class FileIO extends FileIOInterface {
+class FileIO extends FileIOInterface :
 
-  override def load(gameManager: ModelInterface): ModelInterface = {
+  override def load(gameManager: ModelInterface):  Try[ModelInterface]  = Try{
     val file = XML.loadFile("CardStack.xml")
     val nodeSeq = file \\ "text"
     var list = List[Card]()
@@ -33,4 +34,3 @@ class FileIO extends FileIOInterface {
     pw.write(cards.toString())
     pw.close()
   }
-}
