@@ -23,8 +23,7 @@ class Spielfeld(controller: ControllerInterface, infoBar: InfoBar) extends Borde
   endString.visible = false
 
   var antworten = new ListView[AnswerCard]()
-  var beantwortete: ListView[String] = new ListView[String]() {
-  }
+  var beantwortete: ListView[String] = new ListView[String]() {}
 
   val panelRundenInfo: BoxPanel = new BoxPanel(Orientation.Vertical){
     background = Color.BLACK
