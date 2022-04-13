@@ -22,9 +22,9 @@ class UndoManagerSpec extends AnyWordSpec with Matchers{
       command.state should be(0)
       undoManager.doStep(command)
       command.state should be(1)
-      undoManager.undoStep
+      undoManager.undoStep()
       command.state should be(0)
-      undoManager.redoStep
+      undoManager.redoStep()
       command.state should be(1)
     }
 
@@ -35,11 +35,11 @@ class UndoManagerSpec extends AnyWordSpec with Matchers{
       command.state should be(1)
       undoManager.doStep(command)
       command.state should be(2)
-      undoManager.undoStep
+      undoManager.undoStep()
       command.state should be(1)
-      undoManager.undoStep
+      undoManager.undoStep()
       command.state should be(0)
-      undoManager.redoStep
+      undoManager.redoStep()
       command.state should be(1)
     }
   }
