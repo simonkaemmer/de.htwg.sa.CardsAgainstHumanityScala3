@@ -70,6 +70,7 @@ class SwingGui(controller: ControllerInterface) extends Frame {
   }
   def update(): Unit = {
     controller.publish(new UpdateGuiEvent)
+    controller.publish(new UpdateInfoBarEvent)
   }
 
   menuBar = new MenuBar {
