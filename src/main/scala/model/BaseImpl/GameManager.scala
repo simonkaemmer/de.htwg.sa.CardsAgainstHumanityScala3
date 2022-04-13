@@ -89,7 +89,7 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
   def placeCard(activePlayer: Int, card: AnswerCard): GameManager = {
 
     var tmpPlacedCardMap = Map[Player, String]()
-    if (roundAnswerCards != null)
+    if (!roundAnswerCards.isEmpty)
       tmpPlacedCardMap = roundAnswerCards
 
     var newPlayerHand = player(activePlayer).playerCards

@@ -1,14 +1,10 @@
 package model.BaseImpl
 
 import com.google.inject.Inject
-
 import scala.xml.Node
-
 
 trait  Card {
   def printCard(): Unit
-  def addNewCard(card:Card) : KompositumCard
-  def removeCard(card:Card) : KompositumCard
   def toXML: Node
 }
 
@@ -35,12 +31,12 @@ case class KompositumCard @Inject()(cardList:List[Card]) extends Card:
       copy(cardList = list)
   }
 
-  override def addNewCard(card: Card): KompositumCard = {
+  def addNewCard(card: Card): KompositumCard = {
     val immutableList = cardList :+ card
     copy(immutableList)
   }
 
-  override def removeCard(card:Card): KompositumCard = {copy(cardList.filterNot(_ == card))}
+  def removeCard(card:Card): KompositumCard = {copy(cardList.filterNot(_ == card))}
 
   override def toXML: Node = {<ERROR></ERROR>}
 
