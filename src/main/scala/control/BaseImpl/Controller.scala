@@ -65,17 +65,24 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
 
 
   def undo(): Unit = {
-    undoManager.undoStep
-    publish(new UndoEvent)
+    val result = undoManager.undoStep()
+    result match
+      case Success(value) =>
+        publish(new UndoEvent)
+      case Failure(e) =>
+        state = state.failState
   }
 
   def getGameManager: GameManager = gameManager.gameManagerG()
 
   def redo(): Unit = {
-    undoManager.redoStep
-    publish(new UndoEvent)
+    val result = undoManager.redoStep()
+    result match
+      case Success(value) => publish(new UndoEvent)
+      case Failure(e) => state = state.failState
+
   }
-}
+  }
 
 trait ControllerState {
 
