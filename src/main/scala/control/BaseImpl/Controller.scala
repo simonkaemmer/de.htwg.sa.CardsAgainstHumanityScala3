@@ -27,7 +27,6 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
         gameManager = value.gameManagerG()
       case _ =>
         state = state.failState
-        print("Failed")
 
   def save(): Unit = {
     fileMan.save(gameManager) match {
@@ -35,7 +34,6 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
         print("Sucess")
       case Failure(e) =>
         state = state.failState
-        print("Failed")
     }
   }
 
@@ -57,7 +55,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
       case _: SetupState => "SetupGame"
       case _: AnswerState => "AnswerState"
       case _: FinishState => "FinishState"
-      case _: FailState => "FailState"
+      case _: FileFailState => "FailState"
     }
   }
 
@@ -114,7 +112,7 @@ case class PreSetupState(controller: Controller) extends ControllerState {
 
   override def equals(that: Any): Boolean = ???
 
-  override def failState: ControllerState = FailState(controller)
+  override def failState: ControllerState = FileFailState(controller)
 }
 
 case class AddCardsQuest(controller: Controller) extends ControllerState {
@@ -139,7 +137,7 @@ case class AddCardsQuest(controller: Controller) extends ControllerState {
 
   override def nextState: ControllerState = SetupState(controller)
 
-  override def failState: ControllerState = FailState(controller)
+  override def failState: ControllerState = FileFailState(controller)
 }
 
 case class SetupState(controller: Controller) extends ControllerState {
@@ -170,7 +168,7 @@ case class SetupState(controller: Controller) extends ControllerState {
 
   override def nextState: ControllerState = AnswerState(controller)
 
-  override def failState: ControllerState = FailState(controller)
+  override def failState: ControllerState = FileFailState(controller)
 }
 
 case class AnswerState(controller: Controller) extends ControllerState {
@@ -205,7 +203,7 @@ case class AnswerState(controller: Controller) extends ControllerState {
 
   override def stateString: String = controller.getGameManager.roundQuestion
 
-  override def failState: ControllerState = FailState(controller)
+  override def failState: ControllerState = FileFailState(controller)
 
   override def nextState: ControllerState = {
     if(controller.getGameManager.numberOfRounds > controller.getGameManager.numberOfPlayableRounds) {
@@ -222,19 +220,23 @@ case class FinishState(controller: Controller) extends ControllerState {
   override def nextState: ControllerState = this
 
   override def equals(that: Any): Boolean = ???
-  override def failState: ControllerState = FailState(controller)
+  override def failState: ControllerState = FileFailState(controller)
 }
 
-case class FailState(controller: Controller) extends ControllerState {
+case class FileFailState(controller: Controller) extends ControllerState {
 
   override def evaluate(input: String): Unit = ()
 
-  override def stateString: String = "Something went wrong!"
+  override def stateString: String = "Can´t find or read card-file. Please make it is called \"CardStack\"!"
 
   override def nextState: ControllerState = this
 
   override def equals(that: Any): Boolean = ???
 
-  override def failState: ControllerState = this
+  override def failState: ControllerState = {
+
+
+    this
+  }
 
 }
