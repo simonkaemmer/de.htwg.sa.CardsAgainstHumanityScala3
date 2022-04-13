@@ -3,13 +3,14 @@ package model.fileIoComponent.fileIoJsonImpl
 import model.BaseImpl.{AnswerCard, Card, KompositumCard, QuestionCard}
 import model.ModelInterface
 import model.fileIoComponent.FileIOInterface
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import scala.io.Source
+import scala.util.Try
 
-class FileIO extends FileIOInterface {
+class FileIO extends FileIOInterface:
 
-  def load(gameMan: ModelInterface): ModelInterface  = {
+  override def load(gameMan: ModelInterface): Try[ModelInterface]  = Try {
     val source: String = Source.fromFile("CardStack.json").getLines.mkString
     val json: JsValue = Json.parse(source)
     val cards = (json \\ "card")
@@ -27,7 +28,7 @@ class FileIO extends FileIOInterface {
     gameMan.gameManagerG().copy(kompositumCard = kompCards)
   }
 
-  override def save(game: ModelInterface): Unit = {
+  override def save(game: ModelInterface): Try[Unit] = Try {
     import java.io._
     val pw = new PrintWriter(new File("CardStack.json"))
     pw.write(Json.prettyPrint(cardsStackToJson(game)))
@@ -41,4 +42,3 @@ class FileIO extends FileIOInterface {
     )
   }
 
-}

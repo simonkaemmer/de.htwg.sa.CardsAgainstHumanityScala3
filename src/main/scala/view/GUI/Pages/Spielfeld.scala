@@ -73,7 +73,6 @@ class Spielfeld(controller: ControllerInterface, infoBar: InfoBar) extends Borde
     }
 
     case event: UpdateGuiEvent => {
-      print("UpdateGuiEvent")
 
       var tmpList = List[String]()
       controller.getGameManager.roundAnswerCards.foreach(x => tmpList = tmpList :+ "Spieler " + x._1.name + " hat " + x._2)

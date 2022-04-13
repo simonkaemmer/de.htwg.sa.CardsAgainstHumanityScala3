@@ -69,7 +69,8 @@ class SwingGui(controller: ControllerInterface) extends Frame {
     case event: NextStateEvent => nextPage(4)
   }
   def update(): Unit = {
-    this.validate()
+    controller.publish(new UpdateGuiEvent)
+    controller.publish(new UpdateInfoBarEvent)
   }
 
   menuBar = new MenuBar {

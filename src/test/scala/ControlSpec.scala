@@ -119,7 +119,7 @@ class ControlSpec extends AnyWordSpec with Matchers with GivenWhenThen {
       controller.state = AnswerState(controller)
       controller.eval("")
       controller.getGameManager.roundAnswerCards shouldBe empty
-      controller.getGameManager.roundQuestion shouldNot be (null)
+      controller.getGameManager.roundQuestion shouldNot be (0)
       //controller.gameManager = controller.getGameManager.copy(numberOfPlayableRounds = 6)
       //controller.gameManager = controller.getGameManager.copy(numberOfRounds = 7)
 

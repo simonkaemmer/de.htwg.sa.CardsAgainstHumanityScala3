@@ -3,7 +3,6 @@ package model.BaseImpl
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import model.{BaseImpl, ModelInterface}
-
 import scala.language.postfixOps
 import scala.util.Random
 
@@ -62,7 +61,7 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     var cardcount = 0
     var remCard = List[AnswerCard]()
     for (x <- value; if cardcount < 7) yield {
-      remCard = remCard :+ x;
+      remCard = remCard :+ x
       cardcount += 1
     }
     remCard
@@ -71,7 +70,9 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
   def choosePlayerStartCards(playerCount: Int): List[AnswerCard] = {
     val tmpAnswerList = Random.shuffle(answerList)
     var givenCards = List[AnswerCard]()
+
     var count = 0
+
     for (answer <- tmpAnswerList if tmpAnswerList.nonEmpty; if count < 7 * playerCount) {
       givenCards = givenCards :+ answer
       count += 1
@@ -88,7 +89,7 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
   def placeCard(activePlayer: Int, card: AnswerCard): GameManager = {
 
     var tmpPlacedCardMap = Map[Player, String]()
-    if (roundAnswerCards != null)
+    if (!roundAnswerCards.isEmpty)
       tmpPlacedCardMap = roundAnswerCards
 
     var newPlayerHand = player(activePlayer).playerCards

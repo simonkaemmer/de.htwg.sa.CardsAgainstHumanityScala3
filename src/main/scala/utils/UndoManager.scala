@@ -1,5 +1,7 @@
 package utils
 
+import scala.util.Try
+
 class UndoManager {
   private var undoStack: List[Command]= Nil
   private var redoStack: List[Command]= Nil
@@ -9,7 +11,7 @@ class UndoManager {
     command.doStep
   }
 
-  def undoStep = {
+  def undoStep(): Try[Unit] = Try {
     undoStack match {
       case Nil =>
       case head::stack => {
@@ -20,7 +22,7 @@ class UndoManager {
     }
   }
 
-  def redoStep = {
+  def redoStep(): Try[Unit] = Try {
     redoStack match {
       case Nil =>
       case head::stack => {

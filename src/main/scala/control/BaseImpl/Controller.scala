@@ -1,13 +1,14 @@
 package control.BaseImpl
 
 import com.google.inject.{Guice, Inject, Injector}
-import control._
+import control.*
 import model.BaseImpl.GameManager
 import model.ModelInterface
 import model.fileIoComponent.fileIoJsonImpl.FileIO
 import module.CardsAgainstHumanityModule
 import utils.UndoManager
 
+import scala.util.{Failure, Success, Try}
 import scala.swing.Publisher
 
 class Controller @Inject() (var gameManager: ModelInterface) extends ControllerInterface with Publisher {
@@ -19,12 +20,21 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
 
   def nextState(): Unit = state = state.nextState
 
-  def load(): Unit = {
-    gameManager = fileMan.load(gameManager)
-  }
+  def load(): Unit =
+    val result = fileMan.load(gameManager)
+    result match
+      case Success(value) =>
+        gameManager = value.gameManagerG()
+      case _ =>
+        state = state.failState
 
   def save(): Unit = {
-    fileMan.save(gameManager)
+    fileMan.save(gameManager) match {
+      case Success(_) =>
+        print("Sucess")
+      case Failure(e) =>
+        state = state.failState
+    }
   }
 
   def changePage(page: Int): Unit = {
@@ -45,6 +55,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
       case _: SetupState => "SetupGame"
       case _: AnswerState => "AnswerState"
       case _: FinishState => "FinishState"
+      case _: FileFailState => "FailState"
     }
   }
 
@@ -52,17 +63,24 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
 
 
   def undo(): Unit = {
-    undoManager.undoStep
-    publish(new UndoEvent)
+    val result = undoManager.undoStep()
+    result match
+      case Success(value) =>
+        publish(new UndoEvent)
+      case Failure(e) =>
+        state = state.failState
   }
 
   def getGameManager: GameManager = gameManager.gameManagerG()
 
   def redo(): Unit = {
-    undoManager.redoStep
-    publish(new UndoEvent)
+    val result = undoManager.redoStep()
+    result match
+      case Success(value) => publish(new UndoEvent)
+      case Failure(e) => state = state.failState
+
   }
-}
+  }
 
 trait ControllerState {
 
@@ -71,24 +89,30 @@ trait ControllerState {
   def stateString: String
 
   def nextState: ControllerState
+
+  def failState: ControllerState
 }
 
 case class PreSetupState(controller: Controller) extends ControllerState {
 
   override def evaluate(input: String): Unit = {
       controller.gameManager = controller.gameManager.roundStrat(input.toInt)
-      controller.gameManager = controller.fileMan.load(controller.gameManager)
+      controller.load()
       controller.changePage(2)
       controller.publish(new UpdateGuiEvent)
       //controller.publish(new UpdateTuiEvent)
       controller.nextState()
   }
 
+/*  controller.gameManager = controller.fileMan.load(controller.gameManager).get*/
+
   override def stateString: String = "Willkommen bei Cards Against Humanity \n"
 
   override def nextState: ControllerState = AddCardsQuest(controller)
 
   override def equals(that: Any): Boolean = ???
+
+  override def failState: ControllerState = FileFailState(controller)
 }
 
 case class AddCardsQuest(controller: Controller) extends ControllerState {
@@ -112,6 +136,8 @@ case class AddCardsQuest(controller: Controller) extends ControllerState {
   override def stateString: String = "AddCardState"
 
   override def nextState: ControllerState = SetupState(controller)
+
+  override def failState: ControllerState = FileFailState(controller)
 }
 
 case class SetupState(controller: Controller) extends ControllerState {
@@ -141,12 +167,13 @@ case class SetupState(controller: Controller) extends ControllerState {
   override def stateString: String = "SetupState"
 
   override def nextState: ControllerState = AnswerState(controller)
+
+  override def failState: ControllerState = FileFailState(controller)
 }
 
 case class AnswerState(controller: Controller) extends ControllerState {
 
   override def evaluate(input: String): Unit = {
-
     if(input== "" || controller.getGameManager.roundAnswerCards.size == controller.getGameManager.player.length) {
       controller.gameManager = controller.gameManager.clearRoundAnswers()
       controller.gameManager = controller.gameManager.placeQuestionCard()
@@ -176,6 +203,8 @@ case class AnswerState(controller: Controller) extends ControllerState {
 
   override def stateString: String = controller.getGameManager.roundQuestion
 
+  override def failState: ControllerState = FileFailState(controller)
+
   override def nextState: ControllerState = {
     if(controller.getGameManager.numberOfRounds > controller.getGameManager.numberOfPlayableRounds) {
       FinishState(controller)
@@ -191,4 +220,23 @@ case class FinishState(controller: Controller) extends ControllerState {
   override def nextState: ControllerState = this
 
   override def equals(that: Any): Boolean = ???
+  override def failState: ControllerState = FileFailState(controller)
+}
+
+case class FileFailState(controller: Controller) extends ControllerState {
+
+  override def evaluate(input: String): Unit = ()
+
+  override def stateString: String = "Can´t find or read card-file. Please make it is called \"CardStack\"!"
+
+  override def nextState: ControllerState = this
+
+  override def equals(that: Any): Boolean = ???
+
+  override def failState: ControllerState = {
+
+
+    this
+  }
+
 }
