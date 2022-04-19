@@ -5,10 +5,10 @@ import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import control.BaseImpl.Controller
 import control.ControllerInterface
-import model.BaseImpl.GameManager
-import model.ModelInterface
-import model.fileIoComponent.FileIOInterface
-import model.fileIoComponent.fileIoJsonImpl.FileIO
+import model.gameComponent.BaseImpl.GameManager
+import model.gameComponent.ModelInterface
+import fileIoComponent.FileIOInterface
+import fileIoComponent.fileIoJsonImpl.FileIO
 
 class CardsAgainstHumanityModule extends AbstractModule {
   val defPlayers: Int = 2

@@ -2,9 +2,9 @@ package control.BaseImpl
 
 import com.google.inject.{Guice, Inject, Injector}
 import control.*
-import model.BaseImpl.GameManager
-import model.ModelInterface
-import model.fileIoComponent.fileIoJsonImpl.FileIO
+import model.gameComponent.BaseImpl.GameManager
+import model.gameComponent.ModelInterface
+import fileIoComponent.fileIoJsonImpl.FileIO
 import module.CardsAgainstHumanityModule
 import utils.UndoManager
 

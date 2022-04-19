@@ -1,9 +1,8 @@
 package view.GUI.Pages
 
 import java.awt.{Color, Font}
-
-import control._
-import model.BaseImpl.AnswerCard
+import control.*
+import model.gameComponent.BaseImpl.AnswerCard
 import view.GUI.InfoBar
 
 import scala.swing.event.ButtonClicked

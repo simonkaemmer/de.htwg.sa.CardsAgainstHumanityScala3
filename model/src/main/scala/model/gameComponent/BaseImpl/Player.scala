@@ -1,4 +1,4 @@
-package model.BaseImpl
+package model.gameComponent.BaseImpl
 
 case class Player(name:String, isAnswering:Boolean, playerCards:List[AnswerCard]):
 

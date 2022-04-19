@@ -1,5 +1,6 @@
 
-import model.BaseImpl.{AnswerCard, KompositumCard, QuestionCard}
+import main.scala.model.gameComponent.BaseImpl.AnswerCard
+import model.BaseImpl.{KompositumCard, QuestionCard}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 

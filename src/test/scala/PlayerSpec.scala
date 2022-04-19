@@ -1,5 +1,5 @@
 
-import model.BaseImpl.AnswerCard
+import main.scala.model.gameComponent.BaseImpl.AnswerCard
 import model.BaseImpl
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers

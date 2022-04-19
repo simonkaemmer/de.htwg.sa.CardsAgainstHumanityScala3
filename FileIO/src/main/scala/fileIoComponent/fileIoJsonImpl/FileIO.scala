@@ -1,8 +1,8 @@
-package model.fileIoComponent.fileIoJsonImpl
+package fileIoComponent.fileIoJsonImpl
 
-import model.BaseImpl.{AnswerCard, Card, KompositumCard, QuestionCard}
-import model.ModelInterface
-import model.fileIoComponent.FileIOInterface
+import model.gameComponent.BaseImpl.*
+import model.gameComponent.ModelInterface
+import fileIoComponent.FileIOInterface
 import play.api.libs.json.*
 
 import scala.io.Source

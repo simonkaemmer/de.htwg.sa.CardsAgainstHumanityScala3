@@ -1,7 +1,8 @@
 package control.BaseImpl
 
 import control.ControllerInterface
-import model.BaseImpl.{AnswerCard, Card, KompositumCard, QuestionCard}
+import model.gameComponent.BaseImpl.AnswerCard
+import model.gameComponent.BaseImpl.{Card, KompositumCard, QuestionCard}
 import utils.Command
 
 class AddCardsCommand(cardText: String, controller: ControllerInterface) extends Command{

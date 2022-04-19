@@ -1,9 +1,9 @@
 package control
 import com.google.inject.Injector
 import control.BaseImpl.ControllerState
-import model.BaseImpl.GameManager
-import model.ModelInterface
-import model.fileIoComponent.fileIoJsonImpl.FileIO
+import model.gameComponent.BaseImpl.GameManager
+import model.gameComponent.ModelInterface
+import fileIoComponent.fileIoJsonImpl.FileIO
 import utils.UndoManager
 
 import scala.swing.Publisher

@@ -1,8 +1,9 @@
-package model.BaseImpl
+package model.gameComponent.BaseImpl
 
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import model.{BaseImpl, ModelInterface}
+import model.gameComponent.ModelInterface
+
 import scala.language.postfixOps
 import scala.util.Random
 
@@ -177,7 +178,7 @@ object GameManager{
     }
 
     def build(): GameManager = {
-      BaseImpl.GameManager(numberOfPlayer)
+     GameManager(numberOfPlayer)
     }
   }
 }
