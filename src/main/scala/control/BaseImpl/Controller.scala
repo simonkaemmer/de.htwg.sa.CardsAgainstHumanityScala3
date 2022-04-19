@@ -117,9 +117,6 @@ case class PreSetupState(controller: Controller) extends ControllerState {
 
 case class AddCardsQuest(controller: Controller) extends ControllerState {
 
-  println("AddCardsQuest")
-  println(controller.gameManager.kompositumCard.cardList)
-
   //controller.publish(new UpdateTuiEvent)
   controller.publish(new UpdateGuiEvent)
   override def evaluate(input: String): Unit = {
@@ -142,9 +139,6 @@ case class AddCardsQuest(controller: Controller) extends ControllerState {
 
 case class SetupState(controller: Controller) extends ControllerState {
 
-  println("SetupState")
-  println(controller.gameManager.kompositumCard.cardList)
-
   override def evaluate(input: String): Unit = {
 
     if (input.isEmpty) return
@@ -155,7 +149,6 @@ case class SetupState(controller: Controller) extends ControllerState {
 
     controller.gameManager = controller.gameManager.addPlayer(input)
     if (controller.getGameManager.player.length == controller.getGameManager.numberOfPlayers) {
-      println("Aus: " + controller.gameManager.kompositumCard.cardList)
       controller.gameManager = controller.gameManager.createCardDeck()
       controller.gameManager = controller.gameManager.handOutCards()
       controller.nextState()
@@ -194,7 +187,6 @@ case class AnswerState(controller: Controller) extends ControllerState {
         controller.publish(new UpdateGuiEvent)
         controller.publish(new UpdateTuiEvent)
       }
-
     }
 
     if(controller.getGameManager.numberOfRounds >= controller.getGameManager.numberOfPlayableRounds)
@@ -208,7 +200,10 @@ case class AnswerState(controller: Controller) extends ControllerState {
   override def nextState: ControllerState = {
     if(controller.getGameManager.numberOfRounds > controller.getGameManager.numberOfPlayableRounds) {
       FinishState(controller)
-    } else this
+    } else {
+      controller.publish(new UpdateGuiEvent)
+      this
+    }
   }
 }
 

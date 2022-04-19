@@ -12,8 +12,7 @@ class Spielfeld(controller: ControllerInterface, infoBar: InfoBar) extends Borde
 
   preferredSize = new Dimension(790, 500)
   background = Color.GREEN
-
-
+  
   val submitBtn = new Button("Submit / Next Question")
   val nextQuestBtn = new Button("Next Question")
   val playerInfoLbl = new Label("")

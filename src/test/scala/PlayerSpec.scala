@@ -1,6 +1,5 @@
 
-import main.scala.model.gameComponent.BaseImpl.AnswerCard
-import model.BaseImpl
+import model.gameComponent.BaseImpl.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -9,8 +8,8 @@ class PlayerSpec extends AnyWordSpec with Matchers {
   "It´s a player" should {
 
     val a = List[AnswerCard]()
-    var p1 = BaseImpl.Player("Hugo", false, a)
-    val p2 = BaseImpl.Player("Heinz", true, a)
+    var p1 = Player("Hugo", false, a)
+    val p2 = Player("Heinz", true, a)
 
     "have a name" in {
       p1.getName shouldBe "Hugo"

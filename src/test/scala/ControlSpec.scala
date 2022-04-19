@@ -1,5 +1,5 @@
 import control.BaseImpl.{AddCardsQuest, AnswerState, Controller, FinishState, PreSetupState, SetupState}
-import model.BaseImpl
+import model.gameComponent.BaseImpl
 import org.scalatest._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
