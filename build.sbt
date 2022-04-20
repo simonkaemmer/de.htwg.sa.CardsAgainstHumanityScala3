@@ -6,6 +6,7 @@ organization  := "de.htwg.se"
 
 val scala3Version = "3.1.1"
 val projectVersion = "3.1"
+crossScalaVersions ++= Seq("2.13.6", "3.1.1")
 
 lazy val commonDependencies = Seq(
   dependencies.scalactic,
@@ -47,3 +48,4 @@ lazy val commonSettings = Seq(
   scalaVersion := scala3Version,
   organization := "de.htwg.sa",
 )
+
