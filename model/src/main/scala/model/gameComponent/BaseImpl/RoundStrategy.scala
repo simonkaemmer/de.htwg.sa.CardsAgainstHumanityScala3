@@ -1,4 +1,4 @@
-package model.BaseImpl
+package model.gameComponent.BaseImpl
 
 object RoundStrategy {
 

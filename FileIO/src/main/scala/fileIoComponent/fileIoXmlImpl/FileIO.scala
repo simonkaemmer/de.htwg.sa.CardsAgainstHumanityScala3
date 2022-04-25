@@ -1,11 +1,12 @@
-package model.fileIoComponent.fileIoXmlImpl
+package fileIoComponent.fileIoXmlImpl
+
+import model.gameComponent.BaseImpl.*
 
 import java.io.{File, PrintWriter}
+import model.gameComponent.ModelInterface
+import fileIoComponent.FileIOInterface
 
-import model.BaseImpl.{AnswerCard, Card, KompositumCard, QuestionCard}
-import model.ModelInterface
-import model.fileIoComponent.FileIOInterface
-import scala.xml._
+import scala.xml.*
 import scala.util.Try
 
 class FileIO extends FileIOInterface :

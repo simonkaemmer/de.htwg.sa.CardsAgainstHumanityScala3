@@ -1,9 +1,8 @@
 package view.GUI.Pages
 
 import java.awt.{Color, Font}
-
-import control._
-import model.BaseImpl.AnswerCard
+import control.*
+import model.gameComponent.BaseImpl.AnswerCard
 import view.GUI.InfoBar
 
 import scala.swing.event.ButtonClicked
@@ -13,8 +12,7 @@ class Spielfeld(controller: ControllerInterface, infoBar: InfoBar) extends Borde
 
   preferredSize = new Dimension(790, 500)
   background = Color.GREEN
-
-
+  
   val submitBtn = new Button("Submit / Next Question")
   val nextQuestBtn = new Button("Next Question")
   val playerInfoLbl = new Label("")
@@ -23,8 +21,7 @@ class Spielfeld(controller: ControllerInterface, infoBar: InfoBar) extends Borde
   endString.visible = false
 
   var antworten = new ListView[AnswerCard]()
-  var beantwortete: ListView[String] = new ListView[String]() {
-  }
+  var beantwortete: ListView[String] = new ListView[String]() {}
 
   val panelRundenInfo: BoxPanel = new BoxPanel(Orientation.Vertical){
     background = Color.BLACK

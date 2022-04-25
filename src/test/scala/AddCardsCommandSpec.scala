@@ -1,6 +1,6 @@
 
 import control.BaseImpl.{AddCardsCommand, Controller}
-import model.BaseImpl.GameManager
+import model.gameComponent.BaseImpl.GameManager
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 

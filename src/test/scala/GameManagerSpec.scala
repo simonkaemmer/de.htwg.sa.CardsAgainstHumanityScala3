@@ -1,5 +1,5 @@
 import com.sun.org.apache.bcel.internal.generic.INSTANCEOF
-import model.BaseImpl.{AnswerCard, Card, GameManager, KompositumCard, QuestionCard}
+import model.gameComponent.BaseImpl.{AnswerCard, Card, GameManager, KompositumCard, QuestionCard}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 

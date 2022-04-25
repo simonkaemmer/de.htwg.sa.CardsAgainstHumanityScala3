@@ -1,6 +1,7 @@
-package model.BaseImpl
+package model.gameComponent.BaseImpl
 
 import com.google.inject.Inject
+
 import scala.xml.Node
 
 trait  Card {

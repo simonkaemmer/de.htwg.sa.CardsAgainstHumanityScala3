@@ -1,7 +1,6 @@
-package model
+package model.gameComponent
 
-import model.BaseImpl.{AnswerCard, Card, GameManager, KompositumCard, Player, QuestionCard, RoundStrategy}
-
+import model.gameComponent.BaseImpl.*
 
 trait ModelInterface(val numberOfPlayers: Int,
                      val numberOfPlayableRounds: Int,
@@ -24,7 +23,7 @@ trait ModelInterface(val numberOfPlayers: Int,
 
   def playerHand(value: List[AnswerCard]): List[AnswerCard]
 
-  def choosePlayerStartCards(playerCount:Int): List[AnswerCard]
+  def choosePlayerStartCards(playerCount: Int): List[AnswerCard]
 
   def placeQuestionCard(): ModelInterface
 
@@ -36,7 +35,7 @@ trait ModelInterface(val numberOfPlayers: Int,
 
   def clearRoundAnswers(): ModelInterface
 
-  def gameManagerG() : GameManager
+  def gameManagerG(): GameManager
 
   def toString: String
 
