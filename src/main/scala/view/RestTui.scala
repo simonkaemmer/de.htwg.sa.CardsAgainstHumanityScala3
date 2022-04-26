@@ -2,54 +2,45 @@ package view
 
 import control.{ControllerInterface, UpdateTuiEvent}
 
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.swing.Publisher
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
+import akka.http.scaladsl.server.Directives.*
 
+class RestTui(controller: ControllerInterface) {
+  implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
+  implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
-class RestTui extends Publisher {
-/*
-  val appPort: Int = sys.env.getOrElse("APP_PORT", 8080).toString.toInt
-  val connectionInterface = "0.0.0.0"
+  val interface = "localhost"
+  val port = 8080
 
-  def run(): Unit:
-    println("Started Rest-API")
-    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
-    implicit val executionContext: ExecutionContextExecutor = system.executionContext
-
-    val route = concat(
-      pathPrefix("tui") {
-        concat(
-          newCommand,
-          quitCommand,
-          evalCommand
-        )
-      }
-    )
-    val bindingFuture = Http().newServerAt(connectionInterface, appPort).bind(route)
-
-    println(s"Server online at http://$connectionInterface:$appPort/\n.....")
-
-  def newCommand: Route = pathPrefix("new") {
-    post {
-      parameter("") {
-
-      }
-    }
+  def start(): Future[Http.ServerBinding] = {
+    println(s"server started: http://$interface:$port")
+    val route =
+      concat(
+        get {
+          path("") {
+            val apiInfo =
+              """Available API Routes - Uno:
+                |
+                |GET    /new-game/<numOfPlayers>
+                |GET    /set-card/<card>
+                |GET    /get-card
+                |GET    /redo
+                |GET    /undo
+                |GET    /save
+                |GET    /load
+                |GET    /do-step
+                |""".stripMargin
+            complete(HttpEntity(ContentTypes.`application/json`, apiInfo))
+          }
+        }
+      )
+    Http().newServerAt(interface, port).bind(route)
   }
-  def quitCommand: Route = pathPrefix("quit") {
-    post {
-      parameter("") {
 
-      }
-    }
-  }
-  def evalCommand: Route = pathPrefix("eval") {
-    post {
-      parameter("") {
-
-      }
-    }
-  } */
+  def stop(server: Future[Http.ServerBinding]): Unit = server.flatMap(_.unbind()).onComplete(_ => println(port + " released"))
 }
