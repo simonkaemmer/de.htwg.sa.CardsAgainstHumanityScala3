@@ -9,7 +9,7 @@ import akka.actor.typed.scaladsl.Behaviors
 
 
 class RestTui extends Publisher {
-
+/*
   val appPort: Int = sys.env.getOrElse("APP_PORT", 8080).toString.toInt
   val connectionInterface = "0.0.0.0"
 
@@ -51,5 +51,5 @@ class RestTui extends Publisher {
 
       }
     }
-  }
+  } */
 }
