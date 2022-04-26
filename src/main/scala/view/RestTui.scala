@@ -22,9 +22,34 @@ class RestTui extends Publisher {
       pathPrefix("tui") {
         concat(
           newCommand,
-          placeCardCommand,
-
+          quitCommand,
+          evalCommand
         )
       }
     )
+    val bindingFuture = Http().newServerAt(connectionInterface, appPort).bind(route)
+
+    println(s"Server online at http://$connectionInterface:$appPort/\n.....")
+
+  def newCommand: Route = pathPrefix("new") {
+    post {
+      parameter("") {
+
+      }
+    }
+  }
+  def quitCommand: Route = pathPrefix("quit") {
+    post {
+      parameter("") {
+
+      }
+    }
+  }
+  def evalCommand: Route = pathPrefix("eval") {
+    post {
+      parameter("") {
+
+      }
+    }
+  }
 }
