@@ -3,6 +3,8 @@ package model.gameComponent.BaseImpl
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import model.gameComponent.ModelInterface
+import play.api.libs.json.{JsValue, Json, JsNumber, JsArray, JsString}
+import com.fasterxml.jackson.annotation.JsonValue
 
 import scala.language.postfixOps
 import scala.util.Random
@@ -140,26 +142,36 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     sb ++= "Aktuelle Frage Karte: " + roundQuestion + "\n"
     sb ++= "Gelegten Antwort Karten: " + roundAnswerCards.toString() + "\n"
 
-    /*
-    for (i <- player.indices) {
-      sb ++= "Die karten des Spielers: " + player(i).name + "  Seine Karten:" + player(i).playerCards + "\n"
-    }
-    */
-
     player.indices foreach( i => sb ++= "Die Karten des Spielers: " + player(i).name + " Seine Karten:" + player(i).playerCards + "\n")
     sb.toString()
   }
 
 
-  //def getActivePlayer(): Int = activePlayer // Not needed anymore
-
-  //override def setKompositum(komp: KompositumCard): GameManager = {copy(kompositumCard = komp)} // Not needed anymore
-
-  //override def getKompositum(): KompositumCard = kompositumCard // Not needed anymore
-
-  // Helper functions
-
   def incr(x: Int): Int = x + 1
+
+  def gameToJson(): String =
+    Json.obj("game" -> Json.obj(
+      "numberOfPlayers" -> JsNumber(numberOfPlayers),
+      "numberOfPlayableRounds" -> JsNumber(numberOfPlayableRounds),
+      "numberOfRounds" -> JsNumber(numberOfRounds),
+      "activePlayer" -> JsNumber(activePlayer),
+      "kompositumCard" -> JsArray(for card <- kompositumCard.cardList yield JsString(card.toString)),
+      "player" -> JsArray(for dude <- player yield JsString(dude.toString)),
+      "answerList" -> JsArray(for card <- answerList yield JsString(card.toString)),
+      "questionList" -> JsArray(for card <- questionList yield JsString(card.toString)),
+      "roundAnswerCards" -> JsArray(for card <- roundAnswerCards.toArray yield JsString(card.toString())),
+      "roundQuestion" -> JsString(roundQuestion)
+    )).toString()
+
+  def gameFromJson(input: String): ModelInterface = {
+    val json: JsValue = Json.parse(input)
+
+    val playersNum = (json \ "game" \ "numberOfPlayers").get.toString.toInt
+    val playableRoundsNum = (json \ "game" \ "numberOfPlayableRounds").get.toString.toInt
+    val roundsNum = (json \ "game" \ "numberOfRounds").get.toString.toInt
+    val playerActive = (json \ "game" \ "activePlayer").get.toString.toInt
+
+  }
 
 object GameManager{
 
