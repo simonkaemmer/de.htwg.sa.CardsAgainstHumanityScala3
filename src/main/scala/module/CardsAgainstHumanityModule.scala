@@ -1,6 +1,5 @@
 package module
 
-
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import control.BaseImpl.Controller
@@ -12,7 +11,6 @@ import fileIoComponent.fileIoJsonImpl.FileIO
 
 class CardsAgainstHumanityModule extends AbstractModule {
   val defPlayers: Int = 2
-
 
   override def configure(): Unit = {
     bindConstant().annotatedWith(Names.named("Def")).to(defPlayers)

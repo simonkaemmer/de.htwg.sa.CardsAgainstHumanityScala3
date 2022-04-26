@@ -9,6 +9,9 @@ import fileIoComponent.fileIoJsonImpl.FileIO
 
 case object FileIOService {
 
+  val connectionInterface = "0.0.0.0"
+  val connectionPort: Int = sys.env.getOrElse("FILE_IO_PORT", 8081).toString.toInt
+
   def main(args: Array[String]): Unit = {
 
     val fileIO = new FileIO
