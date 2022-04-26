@@ -163,15 +163,14 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
       "roundQuestion" -> JsString(roundQuestion)
     )).toString()
 
-  def gameFromJson(input: String): ModelInterface = {
+/*  def gameFromJson(input: String): ModelInterface = {
     val json: JsValue = Json.parse(input)
 
     val playersNum = (json \ "game" \ "numberOfPlayers").get.toString.toInt
     val playableRoundsNum = (json \ "game" \ "numberOfPlayableRounds").get.toString.toInt
     val roundsNum = (json \ "game" \ "numberOfRounds").get.toString.toInt
     val playerActive = (json \ "game" \ "activePlayer").get.toString.toInt
-
-  }
+  }*/
 
 object GameManager{
 

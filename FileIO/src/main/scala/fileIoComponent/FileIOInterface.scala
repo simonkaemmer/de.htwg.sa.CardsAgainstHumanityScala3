@@ -6,5 +6,5 @@ import model.gameComponent.ModelInterface
 trait FileIOInterface {
   def load(gameMan: ModelInterface): Try[ModelInterface]
 
-  def save(game: ModelInterface): Try[Unit]
+  def save(game: String): Try[Unit]
 }

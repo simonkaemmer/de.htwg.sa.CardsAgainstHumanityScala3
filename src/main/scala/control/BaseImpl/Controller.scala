@@ -29,7 +29,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
         state = state.failState
 
   def save(): Unit = {
-    fileMan.save(gameManager) match {
+    fileMan.save(gameManager.toString) match {
       case Success(_) =>
         print("Sucess")
       case Failure(e) =>

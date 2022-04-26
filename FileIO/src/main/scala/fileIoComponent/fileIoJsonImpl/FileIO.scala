@@ -28,17 +28,23 @@ class FileIO extends FileIOInterface:
     gameMan.gameManagerG().copy(kompositumCard = kompCards)
   }
 
-  override def save(game: ModelInterface): Try[Unit] = Try {
-    import java.io._
-    val pw = new PrintWriter(new File("CardStack.json"))
-    pw.write(Json.prettyPrint(cardsStackToJson(game)))
-    pw.close()
+  override def save(game: String): Try[Unit] = Try {
+//    import java.io._
+//    val pw = new PrintWriter(new File("CardStack.json"))
+//    pw.write(Json.prettyPrint(cardsStackToJson(game)))
+//    pw.close()
+  import java.io._
+  val print_writer = new PrintWriter(new File("matchField.json"))
+  print_writer.write(game)
+  print_writer.close()
+
+
   }
 
-  def cardsStackToJson(game: ModelInterface): JsObject = {
-    Json.obj(
-      "cardList" -> Json.toJson(for{x <- game.kompositumCard.cardList} yield {
-        Json.obj("card" -> JsString(x.toString))})
-    )
-  }
+//  def cardsStackToJson(game: ModelInterface): JsObject = {
+//    Json.obj(
+//      "cardList" -> Json.toJson(for{x <- game.kompositumCard.cardList} yield {
+//        Json.obj("card" -> JsString(x.toString))})
+//    )
+//  }
 

@@ -1,5 +1,10 @@
 package fileIoComponent
 
+import fileIoComponent.fileIoJsonImpl.FileIO
+import model.gameComponent.BaseImpl.GameManager
+import fileIoComponent.fileIoJsonImpl.FileIO
+import model.gameComponent.ModelInterface
+
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
@@ -7,38 +12,47 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives.*
 import fileIoComponent.fileIoJsonImpl.FileIO
 
-case object FileIOService {
+import scala.concurrent.ExecutionContextExecutor
+import scala.util.{Failure, Success}
 
-  val connectionInterface = "0.0.0.0"
-  val connectionPort: Int = sys.env.getOrElse("FILE_IO_PORT", 8081).toString.toInt
+case object FileIOService:
+  def main(args: Array[String]): Unit =
+    val fileIO = FileIO()
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
-  def main(args: Array[String]): Unit = {
+    val interface = "localhost"
+    val port = 8081
 
-    val fileIO = new FileIO
-    implicit val system = ActorSystem(Behaviors.empty, "my-system")
-    implicit val executionContext = system.executionContext
-/*
+    println(s"FileIO service started: http://$interface:$port")
+
     val route =
       concat (
         get {
-          path("load") {
-            complete(HttpEntity(ContentTypes.`application/json`, fileIO.load))
+          path("") {
+            val apiInfo =
+              """Available API Routes - Persistence:
+                |
+                |GET     /load
+                |POST    /save    -> required arguments: gameJson
+                |""".stripMargin
+            complete(HttpEntity(ContentTypes.`application/json`, apiInfo))
           }
+        },
+        get {
+          path("load") {
+              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
+            }
         },
         post {
           path("save") {
-            /*
-            entity(as [String]) { game =>
-              fileIO.save(game)
-              println("GAME SAVED")
-              complete("game saved")
-            */
+            entity(as[String]) { game =>
+              fileIO.save(game) match
+                case Success(s) => complete("Success")
+                case Failure(e) => complete("Failure")
             }
           }
+        }
       )
 
-    val bindingFuture = Http().newServerAt("localhost", 8080).bind(route)
-*/
-
-  }
-}
+    Http().newServerAt(interface, port).bind(route)
