@@ -15,3 +15,13 @@ libraryDependencies += "com.google.inject" % "guice" % "5.1.0"
 libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.0.1"
 
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0-RC5"
+
+val AkkaVersion = "2.6.19"
+val AkkaHttpVersion = "10.2.9"
+libraryDependencies ++= Seq(
+  "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion,
+  "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
+  "com.typesafe.akka" %% "akka-actor" % AkkaVersion
+)
+
+libraryDependencies += ("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion).cross(CrossVersion.for3Use2_13)

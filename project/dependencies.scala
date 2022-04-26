@@ -16,4 +16,6 @@ object versionNumber {
   val scalalangmodulesXml = "2.0.1"
   val scalalangmodulesSwing = "3.0.0"
   val typesafeplay = "2.10.0-RC5"
+  val akkaVersion = "2.6.18"
+  val akkaHttpVersion = "10.2.9"
 }
