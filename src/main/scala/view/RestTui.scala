@@ -8,7 +8,7 @@ import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
-import akka.http.scaladsl.server.Directives.*
+import akka.http.scaladsl.server.Directives._
 
 class RestTui(controller: ControllerInterface) {
   implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")

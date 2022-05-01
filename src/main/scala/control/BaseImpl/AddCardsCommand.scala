@@ -21,20 +21,20 @@ class AddCardsCommand(cardText: String, controller: ControllerInterface) extends
         }
       }
 
-    if(doubleCheck) {
-      if(cardText.contains("_")) {
-        tempList = tempList :+ QuestionCard(cardText)
-        //println("Question hinzugefügt" + tempList)
-      } else {
-        tempList = tempList :+ AnswerCard(cardText)
-        //println("Answer hinzugefügt" + tempList)
+      if(doubleCheck) {
+        if(cardText.contains("_")) {
+          tempList = tempList :+ QuestionCard(cardText)
+          //println("Question hinzugefügt" + tempList)
+        } else {
+          tempList = tempList :+ AnswerCard(cardText)
+          //println("Answer hinzugefügt" + tempList)
+        }
       }
-    }
 
-    val kompCard = KompositumCard(tempList)
-    controller.getGameManager.copy(kompositumCard = kompCard)
-    //println("bahas hinzugefügt" + controller.getGameManager.getKompositum().cardList.toString())
-    ()
+      val kompCard = KompositumCard(tempList)
+      controller.getGameManager.copy(kompositumCard = kompCard)
+      //println("bahas hinzugefügt" + controller.getGameManager.getKompositum().cardList.toString())
+      ()
   }
 
   override def undoStep: Unit = {

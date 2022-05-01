@@ -48,13 +48,13 @@ lazy val commonSettings = Seq(
   organization := "de.htwg.sa",
 )
 
-val AkkaVersion = "2.6.18"
-val AkkaHttpVersion = "10.2.9"
-libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion,
-  "com.typesafe.akka" %% "akka-stream" % AkkaVersion,
-  "com.typesafe.akka" %% "akka-actor" % AkkaVersion,
-)
+val akkaVersion = "2.6.19"
+val akkaHttpVersion = "10.2.9"
 
-libraryDependencies += ("com.typesafe.akka" %% "akka-http" % AkkaHttpVersion).cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.akka" %% "akka-actor-typed" % akkaVersion).cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.akka" %% "akka-stream" % akkaVersion).cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.akka" %% "akka-actor" % akkaVersion).cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.akka" %% "akka-http" % akkaHttpVersion).cross(CrossVersion.for3Use2_13)
+
+libraryDependencies += "org.slf4j" % "slf4j-nop" % "2.0.0-alpha7"
 

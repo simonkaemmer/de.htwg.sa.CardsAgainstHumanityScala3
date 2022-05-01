@@ -34,7 +34,19 @@ case object ModelService {
                 |""".stripMargin
             complete(HttpEntity(ContentTypes.`application/json`, apiInfo))
           }
+        },
+        get {
+          path("game") {
+            complete(HttpEntity(ContentTypes.`application/json`, game.gameToJson()))
+          }
+        },
+        post {
+          path("test") {
+            println("Working!")
+            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
+          }
         }
       )
+    val bindingFuture = Http().newServerAt(interface, port).bind(route)
   }
 }

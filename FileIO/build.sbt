@@ -16,11 +16,13 @@ libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.0.1"
 
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0-RC5"
 
-val akkaVersion = "2.6.18"
+
+
+
+val akkaVersion = "2.6.19"
 val akkaHttpVersion = "10.2.9"
-libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
-  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
-  "com.typesafe.akka" %% "akka-actor" % akkaVersion
-)
+
+libraryDependencies += ("com.typesafe.akka" %% "akka-actor-typed" % akkaVersion).cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.akka" %% "akka-stream" % akkaVersion).cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.akka" %% "akka-actor" % akkaVersion).cross(CrossVersion.for3Use2_13)
 libraryDependencies += ("com.typesafe.akka" %% "akka-http" % akkaHttpVersion).cross(CrossVersion.for3Use2_13)
