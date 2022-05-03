@@ -4,13 +4,14 @@ import control.BaseImpl.Controller
 import view.GUI.SwingGui
 import view.RestTui
 
+
 object CaHMain {
   val injector: Injector = Guice.createInjector(new CardsAgainstHumanityModule)
   val controller: Controller = injector.getInstance(classOf[Controller])
   val gui = new SwingGui(controller)
 
-  //val restService = RestTui(controller)
-  //val server = restService.start()
+  val restService = RestTui(controller)
+  val server = restService.start()
   //val tui = new Tui(controller)
 
   def main(args: Array[String]): Unit = {

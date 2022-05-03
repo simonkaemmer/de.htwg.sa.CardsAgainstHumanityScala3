@@ -39,9 +39,5 @@ trait ModelInterface(val numberOfPlayers: Int,
 
   def toString: String
 
-  //def getActivePlayer():Int
-  //def getKompositum(): KompositumCard
-  //def setKompositum(komp: KompositumCard) : ModelInterface
-
   def addPlayer(name: String): ModelInterface
 }
