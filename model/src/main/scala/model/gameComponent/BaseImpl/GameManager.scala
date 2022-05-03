@@ -1,5 +1,6 @@
 package model.gameComponent.BaseImpl
 
+import model.gameComponent.BaseImpl.Card
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import model.gameComponent.ModelInterface
@@ -14,7 +15,16 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
                                   override val numberOfRounds: Int = 0,
                                   override val activePlayer: Int = 0,
                                   override val kompositumCard: KompositumCard = KompositumCard(List[Card]()),
-                                  override val player: Vector[Player] = Vector(),
+                                  override val player: Vector[Player] = Vector(
+                                    Player("Hugo", true, List[AnswerCard](
+                                      AnswerCard("Drei"),
+                                      AnswerCard("Vier")
+                                    )),
+                                    Player("Egon", false, List[AnswerCard](
+                                      AnswerCard("Fünf"),
+                                      AnswerCard("Sechs")
+                                    ))
+                                  ),
                                   override val answerList: List[AnswerCard] = List(),
                                   override val questionList: List[QuestionCard] = List(),
                                   override val roundAnswerCards: Map[Player, String] = Map[Player, String](),
@@ -168,40 +178,58 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
       "roundQuestion" -> JsString(roundQuestion)
     )).toString()
 
-
-  def gameFromJson(input: String): ModelInterface = {
-    val json: JsValue = Json.parse(input)
-
-    val playersNum = (json \ "game" \ "numberOfPlayers").get.toString.toInt
-    val playableRoundsNum = (json \ "game" \ "numberOfPlayableRounds").get.toString.toInt
-    val roundsNum = (json \ "game" \ "numberOfRounds").get.toString.toInt
-    val playerActive = (json \ "game" \ "activePlayer").get.toString.toInt
-
-    val tempCards: List[String] = (json \ "game" \ "kompositumCard").as[List[String]]
-    val kompositumCard: KompositumCard = kompositumCard.addNewCards((json \ "game" \ "kompusitumCard").as[List[String]])
-
-
-    // FIXME: Player Json representation not correct:
-    // - name
-    // - state
-    // - cardList
-    // TODO: Implement Json conversion in both directions
-
-  }
+//  def gameFromJson(input: String): ModelInterface = {
+//    val json: JsValue = Json.parse(input)
+//
+//    val playersNum = (json \ "game" \ "numberOfPlayers").get.toString.toInt
+//    val playableRoundsNum = (json \ "game" \ "numberOfPlayableRounds").get.toString.toInt
+//    val roundsNum = (json \ "game" \ "numberOfRounds").get.toString.toInt
+//    val playerActive = (json \ "game" \ "activePlayer").get.toString.toInt
+//
+//    val tempCards: List[String] = (json \ "game" \ "kompositumCard").as[List[String]]
+//    val kompositumCard: KompositumCard = kompositumCard.addNewCards((json \ "game" \ "kompusitumCard").as[List[String]])
+//
+//
+//    // FIXME: Player Json representation not correct:
+//    // - name
+//    // - state
+//    // - cardList
+//    // TODO: Implement Json conversion in both directions
+//
+//  }
 
   // Tooling
 
   def playerFromJson(input: String, playerCount: Int): Vector[Player] =
 
     val json: JsValue = Json.parse(input)
-    val player: List[Player] = (json \ "game" \ "player").get.
+    val playerNames = (json \\ "name").map(_.toString)
+    val playerStates = (json \\ "state")
+    val playerCards = (json \\ "playerCards").map(_.toString)
+
+    println(playerStates.head.as[Boolean])
 
     playerCount match {
       case 2 =>
 
-        return Vector[Player]()
+        val playerCardsTwo = playerCards.map(_.toString)
+
+        return Vector[Player](
+          //Player(playerNames.head, playerStates.head.as[Boolean], )
+        )
       case 3 =>
+        val playerOne = (json \ "game" \ "player").get(0)
+        val playerTwo = (json \ "game" \ "player").get(1)
+        val playerThree = (json \ "game" \ "player").get(2)
+        return Vector[Player]()
+
       case 4 =>
+        val playerOne = (json \ "game" \ "player").get(0)
+        val playerTwo = (json \ "game" \ "player").get(1)
+        val playerThree = (json \ "game" \ "player").get(2)
+        val playerFour = (json \ "game" \ "player").get(3)
+        return Vector[Player]()
+
     }
 
 object GameManager{

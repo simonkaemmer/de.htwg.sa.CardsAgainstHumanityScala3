@@ -21,6 +21,8 @@ case object ModelService {
     val interface = "localhost"
     val port = 8082
 
+    val test = game.playerFromJson(game.gameToJson(), 2)
+
     println(s"Game services started @ http://$interface:$port")
 
     val route =
