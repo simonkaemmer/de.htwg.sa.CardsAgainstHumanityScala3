@@ -3,7 +3,7 @@ package model.gameComponent.BaseImpl
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import model.gameComponent.ModelInterface
-import play.api.libs.json.{JsValue, Json, JsNumber, JsArray, JsString}
+import play.api.libs.json.{JsValue, Json, JsNumber, JsArray, JsString, JsBoolean}
 import com.fasterxml.jackson.annotation.JsonValue
 
 import scala.language.postfixOps
@@ -150,18 +150,24 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
   def incr(x: Int): Int = x + 1
 
   def gameToJson(): String =
+
     Json.obj("game" -> Json.obj(
       "numberOfPlayers" -> JsNumber(numberOfPlayers),
       "numberOfPlayableRounds" -> JsNumber(numberOfPlayableRounds),
       "numberOfRounds" -> JsNumber(numberOfRounds),
       "activePlayer" -> JsNumber(activePlayer),
       "kompositumCard" -> JsArray(for card <- kompositumCard.cardList yield JsString(card.toString)),
-      "player" -> JsArray(for dude <- player yield JsString(dude.toString)),
+      "player" -> JsArray(for dude <- player yield Json.obj(
+        "name" -> dude.name,
+        "state" -> JsBoolean(dude.isAnswering),
+        "playerCards" -> JsArray(for card <- dude.playerCards yield JsString(card.toString))
+      )),
       "answerList" -> JsArray(for card <- answerList yield JsString(card.toString)),
       "questionList" -> JsArray(for card <- questionList yield JsString(card.toString)),
       "roundAnswerCards" -> JsArray(for card <- roundAnswerCards.toArray yield JsString(card.toString())),
       "roundQuestion" -> JsString(roundQuestion)
     )).toString()
+
 
   def gameFromJson(input: String): ModelInterface = {
     val json: JsValue = Json.parse(input)
@@ -174,8 +180,6 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     val tempCards: List[String] = (json \ "game" \ "kompositumCard").as[List[String]]
     val kompositumCard: KompositumCard = kompositumCard.addNewCards((json \ "game" \ "kompusitumCard").as[List[String]])
 
-    //val playerList: List[Player] = (json \ "game")
-    // player: Vector[Player] = player ++:
 
     // FIXME: Player Json representation not correct:
     // - name
@@ -184,6 +188,21 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     // TODO: Implement Json conversion in both directions
 
   }
+
+  // Tooling
+
+  def playerFromJson(input: String, playerCount: Int): Vector[Player] =
+
+    val json: JsValue = Json.parse(input)
+    val player: List[Player] = (json \ "game" \ "player").get.
+
+    playerCount match {
+      case 2 =>
+
+        return Vector[Player]()
+      case 3 =>
+      case 4 =>
+    }
 
 object GameManager{
 
