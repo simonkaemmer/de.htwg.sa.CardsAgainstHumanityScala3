@@ -55,12 +55,11 @@ case object ModelService {
         },
         post {
           path("roundStrategy") {
-            entity(as[String]) { request =>
-              val json: JsValue = Json.parse(request)
-              val amountOfPlayers = (json \ "amountOfPlayers").get.toString.toInt
-              
-
-            }
+//            entity(as[String]) { request =>
+//              val json: JsValue = Json.parse(request)
+//              val amountOfPlayers = (json \ "amountOfPlayers").get.toString.toInt
+//
+//            }
             complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
           }
         },
