@@ -13,7 +13,7 @@ import model.gameComponent.BaseImpl.GameManager
 case object ModelService {
 
   def main(args: Array[String]): Unit = {
-    val game = GameManager()
+    val game = GameManager().dummyData()
 
     implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
@@ -21,7 +21,7 @@ case object ModelService {
     val interface = "localhost"
     val port = 8082
 
-    val test = game.playerFromJson(game.gameToJson(), 2)
+    val test = game.gameFromJson(game.gameToJson())
 
     println(s"Game services started @ http://$interface:$port")
 

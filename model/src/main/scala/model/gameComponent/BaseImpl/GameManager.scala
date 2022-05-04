@@ -4,9 +4,10 @@ import model.gameComponent.BaseImpl.Card
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import model.gameComponent.ModelInterface
-import play.api.libs.json.{JsValue, Json, JsNumber, JsArray, JsString, JsBoolean}
+import play.api.libs.json.{JsArray, JsBoolean, JsNumber, JsString, JsValue, Json}
 import com.fasterxml.jackson.annotation.JsonValue
 
+import scala.collection.IterableOnce
 import scala.language.postfixOps
 import scala.util.Random
 
@@ -15,19 +16,10 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
                                   override val numberOfRounds: Int = 0,
                                   override val activePlayer: Int = 0,
                                   override val kompositumCard: KompositumCard = KompositumCard(List[Card]()),
-                                  override val player: Vector[Player] = Vector(
-                                    Player("Hugo", true, List[AnswerCard](
-                                      AnswerCard("Drei"),
-                                      AnswerCard("Vier")
-                                    )),
-                                    Player("Egon", false, List[AnswerCard](
-                                      AnswerCard("Fünf"),
-                                      AnswerCard("Sechs")
-                                    ))
-                                  ),
+                                  override val player: Vector[Player] = Vector(),
                                   override val answerList: List[AnswerCard] = List(),
                                   override val questionList: List[QuestionCard] = List(),
-                                  override val roundAnswerCards: Map[Player, String] = Map[Player, String](),
+                                  override val roundAnswerCards: Map[Player, String] = Map(),
                                   override val roundQuestion: String = "") extends ModelInterface(numberOfPlayers, numberOfPlayableRounds, numberOfRounds, activePlayer, kompositumCard, player, answerList, questionList, roundAnswerCards, roundQuestion):
 
   override def roundStrat(numberPlayer: Int): GameManager = RoundStrategy.execute(numberPlayer)
@@ -174,29 +166,41 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
       )),
       "answerList" -> JsArray(for card <- answerList yield JsString(card.toString)),
       "questionList" -> JsArray(for card <- questionList yield JsString(card.toString)),
-      "roundAnswerCards" -> JsArray(for card <- roundAnswerCards.toArray yield JsString(card.toString())),
+      "roundAnswerCards" ->  JsArray(for mapping <- roundAnswerCards.toList yield Json.obj(
+        "name" -> mapping._1.name.toString,
+        "placedCard" -> mapping._2.toString)),
       "roundQuestion" -> JsString(roundQuestion)
     )).toString()
 
-//  def gameFromJson(input: String): ModelInterface = {
-//    val json: JsValue = Json.parse(input)
-//
-//    val playersNum = (json \ "game" \ "numberOfPlayers").get.toString.toInt
-//    val playableRoundsNum = (json \ "game" \ "numberOfPlayableRounds").get.toString.toInt
-//    val roundsNum = (json \ "game" \ "numberOfRounds").get.toString.toInt
-//    val playerActive = (json \ "game" \ "activePlayer").get.toString.toInt
-//
-//    val tempCards: List[String] = (json \ "game" \ "kompositumCard").as[List[String]]
-//    val kompositumCard: KompositumCard = kompositumCard.addNewCards((json \ "game" \ "kompusitumCard").as[List[String]])
-//
-//
-//    // FIXME: Player Json representation not correct:
-//    // - name
-//    // - state
-//    // - cardList
-//    // TODO: Implement Json conversion in both directions
-//
-//  }
+  def gameFromJson(input: String): ModelInterface = {
+    val json: JsValue = Json.parse(input)
+
+    val playersNum = (json \ "game" \ "numberOfPlayers").get.toString.toInt
+    val playableRoundsNum = (json \ "game" \ "numberOfPlayableRounds").get.toString.toInt
+    val roundsNum = (json \ "game" \ "numberOfRounds").get.toString.toInt
+    val playerActive = (json \ "game" \ "activePlayer").get.toString.toInt
+
+    val tempCards: List[String] = (json \ "game" \ "kompositumCard").as[List[String]]
+    //val kompositumCard: KompositumCard = kompositumCard.addNewCards((json \ "game" \ "kompusitumCard").as[List[String]])
+
+    val player: Vector[Player] = playerFromJson(gameToJson(), playersNum)
+    val answerList: List[AnswerCard] = (json \ "game" \\ "answerList").map(s => AnswerCard(s.toString)).toList
+    val questionList: List[QuestionCard] = (json \ "game" \\ "questionList").map(s => QuestionCard(s.toString)).toList
+
+    val roundAnswerCards = (json \ "game" \\ "roundAnswerCards").flatMap(s =>
+      val data = (s \\ "name").toList
+
+        for x <- data yield println(x)
+      List(s)
+    )
+    println(roundAnswerCards)
+    GameManager()
+
+  }
+  // TODO Implement Full Json to Game
+  //  - kompositumCard not working
+  //  - roundAnswerCard Map not working
+  //  - test everything
 
   // Tooling
 
@@ -205,32 +209,71 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     val json: JsValue = Json.parse(input)
     val playerNames = (json \\ "name").map(_.toString)
     val playerStates = (json \\ "state")
-    val playerCards = (json \\ "playerCards").map(_.toString)
-
-    println(playerStates.head.as[Boolean])
+    val playerCards = (json \\ "playerCards").map(_.as[List[String]])
 
     playerCount match {
       case 2 =>
 
-        val playerCardsTwo = playerCards.map(_.toString)
+        val playerOneCards = playerCards(0).map(s => AnswerCard(s.toString)).toList
+        val playerTwoCards = playerCards(1).map(s => AnswerCard(s.toString)).toList
 
         return Vector[Player](
-          //Player(playerNames.head, playerStates.head.as[Boolean], )
+          Player(playerNames.head, playerStates.head.as[Boolean], playerOneCards),
+          Player(playerNames.last, playerStates.last.as[Boolean], playerTwoCards)
         )
       case 3 =>
-        val playerOne = (json \ "game" \ "player").get(0)
-        val playerTwo = (json \ "game" \ "player").get(1)
-        val playerThree = (json \ "game" \ "player").get(2)
-        return Vector[Player]()
+
+        val playerOneCards = playerCards(0).map(s => AnswerCard(s.toString)).toList
+        val playerTwoCards = playerCards(1).map(s => AnswerCard(s.toString)).toList
+        val playerThreeCards = playerCards(2).map(s => AnswerCard(s.toString)).toList
+
+        return Vector[Player](
+          Player(playerNames.head, playerStates.head.as[Boolean], playerOneCards),
+          Player(playerNames(1), playerStates(1).as[Boolean], playerTwoCards),
+          Player(playerNames.last, playerStates.last.as[Boolean], playerThreeCards)
+        )
 
       case 4 =>
-        val playerOne = (json \ "game" \ "player").get(0)
-        val playerTwo = (json \ "game" \ "player").get(1)
-        val playerThree = (json \ "game" \ "player").get(2)
-        val playerFour = (json \ "game" \ "player").get(3)
-        return Vector[Player]()
 
+        val playerOneCards = playerCards(0).map(s => AnswerCard(s.toString)).toList
+        val playerTwoCards = playerCards(1).map(s => AnswerCard(s.toString)).toList
+        val playerThreeCards = playerCards(2).map(s => AnswerCard(s.toString)).toList
+        val playerFourCards = playerCards(3).map(s => AnswerCard(s.toString)).toList
+
+        return Vector[Player](
+          Player(playerNames.head, playerStates.head.as[Boolean], playerOneCards),
+          Player(playerNames(1), playerStates(1).as[Boolean], playerTwoCards),
+          Player(playerNames(2), playerStates(2).as[Boolean], playerThreeCards),
+          Player(playerNames.last, playerStates.last.as[Boolean], playerFourCards)
+        )
     }
+
+  def dummyData(): GameManager = {
+    val numberOfPlayersD: Int = 2
+    val numberOfPlayableRoundsD: Int = 10
+    val numberOfRoundsD: Int = 0
+    val activePlayerD: Int = 0
+    val kompositumCardD: KompositumCard = KompositumCard(List[Card]())
+    val playerD: Vector[Player] = Vector(
+      Player("Hugo", true, List[AnswerCard](
+        AnswerCard("Drei"),
+        AnswerCard("Vier")
+      )),
+      Player("Egon", false, List[AnswerCard](
+        AnswerCard("Fünf"),
+        AnswerCard("Sechs")
+      ))
+    )
+    val answerListD: List[AnswerCard] = List()
+    val questionListD: List[QuestionCard] = List()
+    val roundAnswerCardsD: Map[Player, String] = Map[Player, String](
+      Player("Hugo", true, List[AnswerCard](AnswerCard("Sieben"))) ->  "DIngs",
+      Player("Egon", false, List[AnswerCard](AnswerCard("Acht"))) -> "Bums",
+      Player("Hugo", true, List[AnswerCard](AnswerCard("neun"))) -> "düdüd")
+    val roundQuestionD: String = ""
+
+    copy(numberOfPlayersD, numberOfPlayableRoundsD, numberOfRoundsD, activePlayerD, kompositumCardD, playerD, answerListD, questionListD, roundAnswerCardsD, roundQuestionD)
+  }
 
 object GameManager{
 
