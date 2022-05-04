@@ -11,45 +11,75 @@ import utils.UndoManager
 import scala.util.{Failure, Success, Try}
 import scala.swing.Publisher
 
-//import akka.actor.typed.ActorSystem
-//import akka.actor.typed.scaladsl.Behaviors
-//import akka.http.scaladsl.Http
-//import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
-//import scala.concurrent.ExecutionContextExecutor
-//import scala.swing.{Color, Publisher}
-//import scala.util.{Failure, Success, Try}
-//import akka.http.scaladsl.unmarshalling.Unmarshaller
-//import play.api.libs.json.{JsValue, Json}
+import akka.actor.typed.ActorSystem
+import akka.actor.typed.scaladsl.Behaviors
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
+import scala.concurrent.ExecutionContextExecutor
+import scala.swing.{Color, Publisher}
+import scala.util.{Failure, Success, Try}
+import akka.http.scaladsl.unmarshalling.Unmarshaller
+import play.api.libs.json.{JsValue, Json}
 
 class Controller @Inject() (var gameManager: ModelInterface) extends ControllerInterface with Publisher {
 
   var state: ControllerState = PreSetupState(this)
   val undoManager = new UndoManager
   val injector: Injector = Guice.createInjector(new CardsAgainstHumanityModule)
-  val fileMan: FileIO = injector.getInstance(classOf[FileIO])
 
-//  implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
-//  implicit val executionContext: ExecutionContextExecutor = system.executionContext
+  implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+  implicit val executionContext: ExecutionContextExecutor = system.executionContext
+
+  val modelHttpServer: String = sys.env.getOrElse("MODELHTTPSERVER", "localhost:8082")
+  val fileIOHttpServer: String = sys.env.getOrElse("FILEHTTPSERVER", "localhost:8084")
 
 
   def nextState(): Unit = state = state.nextState
 
-  def load(): Unit =
-    val result = fileMan.load(gameManager)
-    result match
+  def save(): Unit =
+    Http().singleRequest(
+      HttpRequest(
+        method = HttpMethods.POST,
+        uri = s"http://$fileIOHttpServer/save",
+        entity = HttpEntity(ContentTypes.`application/json`, gameManager.toString)
+      )
+    ).onComplete {
       case Success(value) =>
-        gameManager = value.gameManagerG()
-      case _ =>
-        state = state.failState
-
-  def save(): Unit = {
-    fileMan.save(gameManager.toString) match {
-      case Success(_) =>
-        print("Sucess")
-      case Failure(e) =>
-        state = state.failState
+        Unmarshaller.stringUnmarshaller(value.entity).onComplete {
+          case Success(value) =>
+            if value.equals("Success") then
+              println("success1")
+            else
+              state = state.failState
+          case Failure(_) =>
+              state = state.failState
+        }
+      case Failure(_) =>
+              state = state.failState
     }
-  }
+
+  def load(): Unit =
+    Http().singleRequest(
+      HttpRequest(
+        method = HttpMethods.GET,
+        uri = s"http://$fileIOHttpServer/load"
+      )
+    ).onComplete {
+      case Success(value) =>
+        Unmarshaller.stringUnmarshaller(value.entity).onComplete {
+          case Success(value) =>
+            if value.equals("Failure") then
+              state = state.failState
+            else
+             val cards = value
+             println(cards)
+
+          case Failure(_) =>
+              state = state.failState
+        }
+      case Failure(_) =>
+              state = state.failState
+    }
 
   def changePage(page: Int): Unit = {
     page match{
