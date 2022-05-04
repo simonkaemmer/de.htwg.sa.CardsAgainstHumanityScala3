@@ -11,12 +11,26 @@ import utils.UndoManager
 import scala.util.{Failure, Success, Try}
 import scala.swing.Publisher
 
+//import akka.actor.typed.ActorSystem
+//import akka.actor.typed.scaladsl.Behaviors
+//import akka.http.scaladsl.Http
+//import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
+//import scala.concurrent.ExecutionContextExecutor
+//import scala.swing.{Color, Publisher}
+//import scala.util.{Failure, Success, Try}
+//import akka.http.scaladsl.unmarshalling.Unmarshaller
+//import play.api.libs.json.{JsValue, Json}
+
 class Controller @Inject() (var gameManager: ModelInterface) extends ControllerInterface with Publisher {
 
   var state: ControllerState = PreSetupState(this)
   val undoManager = new UndoManager
   val injector: Injector = Guice.createInjector(new CardsAgainstHumanityModule)
   val fileMan: FileIO = injector.getInstance(classOf[FileIO])
+
+//  implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+//  implicit val executionContext: ExecutionContextExecutor = system.executionContext
+
 
   def nextState(): Unit = state = state.nextState
 

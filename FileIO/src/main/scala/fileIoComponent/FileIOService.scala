@@ -1,30 +1,32 @@
 package fileIoComponent
 
 import fileIoComponent.fileIoJsonImpl.FileIO
-import model.gameComponent.BaseImpl.GameManager
+import play.api.libs.json.Json
+import scala.util.{Failure, Success}
 import fileIoComponent.fileIoJsonImpl.FileIO
-import model.gameComponent.ModelInterface
+
 
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
-import akka.http.scaladsl.server.Directives.*
-import fileIoComponent.fileIoJsonImpl.FileIO
-
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.server.Directives._
+import scala.io.StdIn
 import scala.concurrent.ExecutionContextExecutor
-import scala.util.{Failure, Success}
 
-case object FileIOService:
-  def main(args: Array[String]): Unit =
+
+case object FileIOService{
+
+  def main(args: Array[String]): Unit = {
     val fileIO = FileIO()
+
     implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
     val interface = "localhost"
-    val port = 8081
+    val port = 8084
 
-    println(s"FileIO service started: http://$interface:$port")
+    println(s"Game services started @ http://$interface:$port")
 
     val route =
       concat (
@@ -41,18 +43,21 @@ case object FileIOService:
         },
         get {
           path("load") {
-              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
-            }
+            fileIO.load() match
+              case Success(cards) => complete(HttpEntity(ContentTypes.`application/json`, cards))
+              case Failure(e) => complete("Failure")
+          }
         },
         post {
           path("save") {
-            entity(as[String]) { game =>
-              fileIO.save(game) match
+            entity(as[String]) { cards =>
+              fileIO.save(cards) match
                 case Success(s) => complete("Success")
                 case Failure(e) => complete("Failure")
             }
           }
         }
       )
-
-    Http().newServerAt(interface, port).bind(route)
+    val bindingFuture = Http().newServerAt(interface, port).bind(route)
+  }
+}
