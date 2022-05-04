@@ -13,7 +13,7 @@ import model.gameComponent.BaseImpl.GameManager
 case object ModelService {
 
   def main(args: Array[String]): Unit = {
-    val game = GameManager().dummyData()
+    var game = GameManager().dummyData()
 
     implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
@@ -21,7 +21,6 @@ case object ModelService {
     val interface = "localhost"
     val port = 8082
 
-    val test = game.gameFromJson(game.gameToJson())
 
     println(s"Game services started @ http://$interface:$port")
 
@@ -56,6 +55,14 @@ case object ModelService {
           }
         },
         post {
+          path("test") {
+            entity(as[String]) { request =>
+              println("req: " + request)
+              complete(HttpEntity(ContentTypes.`application/json`, game.gameToJson()))
+            }
+          }
+        },
+        post {
           path("roundStrategy") {
 //            entity(as[String]) { request =>
 //              val json: JsValue = Json.parse(request)
@@ -67,12 +74,16 @@ case object ModelService {
         },
         post {
           path("createCardDeck") {
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
+            entity(as[String]) { request =>
+              complete(HttpEntity(ContentTypes.`application/json`, game.gameFromJson(request).createCardDeck().gameToJson()))
+            }
           }
         },
         post {
           path("handOutCards") {
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
+            entity(as[String]) { request =>
+              complete(HttpEntity(ContentTypes.`application/json`, game.gameFromJson(request).handOutCards().gameToJson()))
+            }
           }
         },
         post {
@@ -92,7 +103,9 @@ case object ModelService {
         },
         post {
           path("placeQuestionCard") {
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
+            entity(as[String]) { request =>
+              complete(HttpEntity(ContentTypes.`application/json`, game.gameFromJson(request).placeQuestionCard().gameToJson()))
+            }
           }
         },
         post {
@@ -102,17 +115,24 @@ case object ModelService {
         },
         post {
           path("pickNextPlayer") {
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
+            entity(as[String]) { request =>
+              println(request)
+              complete(HttpEntity(ContentTypes.`application/json`, game.pickNextPlayer().gameToJson()))
+            }
           }
         },
         post {
           path("drawCard") {
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
+            entity(as[String]) { request =>
+              complete(HttpEntity(ContentTypes.`application/json`, game.gameFromJson(request).drawCard().gameToJson()))
+            }
           }
         },
         post {
           path("clearRoundAnswers") {
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
+            entity(as[String]) { request =>
+              complete(HttpEntity(ContentTypes.`application/json`, game.gameFromJson(request).clearRoundAnswers().gameToJson()))
+            }
           }
         }
       )

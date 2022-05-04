@@ -40,4 +40,8 @@ trait ModelInterface(val numberOfPlayers: Int,
   def toString: String
 
   def addPlayer(name: String): ModelInterface
+
+  def gameFromJson(input: String): ModelInterface
+
+  def gameToJson(): String
 }
