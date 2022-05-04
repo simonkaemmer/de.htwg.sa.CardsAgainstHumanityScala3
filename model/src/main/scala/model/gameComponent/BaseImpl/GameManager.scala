@@ -109,11 +109,7 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     copy(player = tmpPlayerVecList, roundAnswerCards = tmpPlacedCardMap)
   }
 
-  def pickNextPlayer(): GameManager = {
-    val tmpActivePlayer = (activePlayer + 1) % player.length
-    println("ActivePlayer: " + tmpActivePlayer + " PlayerLen: " + player.length + " Real active player: " + activePlayer)
-    copy(activePlayer = tmpActivePlayer)
-  }
+  override def pickNextPlayer(): GameManager = copy(activePlayer = (activePlayer + 1) % player.length)
 
   def drawCard(): GameManager = {
     var answerTmp = answerList
@@ -226,6 +222,25 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
   }
 
   // Tooling
+
+  def kompCardFromJson(input: String): Unit = {
+
+    println("in komCardFromJson")
+
+    val json = Json.parse(input)
+
+    val questCardsJson= (json \ "cardList").head
+    val answerCardJson = (json \ "cardList").last
+
+    val questCards = (questCardsJson \\ "card").map(s => QuestionCard(s.toString)).toList
+    val answerCards = (answerCardJson \\ "card").map(s => AnswerCard(s.toString)).toList
+    val kompCardList: List[Card] = questCards ++ answerCards
+
+    println(questCards)
+    println(answerCards)
+    println(kompCardList)
+    //KompositumCard(allCards)
+  }
 
   def playerFromJson(input: String, playerCount: Int): Vector[Player] =
 

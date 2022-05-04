@@ -70,9 +70,12 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
           case Success(value) =>
             if value.equals("Failure") then
               state = state.failState
-            else
-             val cards = value
-             println(cards)
+            else{
+              val cards = value
+              println(cards)
+
+            }
+
 
           case Failure(_) =>
               state = state.failState
@@ -140,7 +143,7 @@ trait ControllerState {
 case class PreSetupState(controller: Controller) extends ControllerState {
 
   override def evaluate(input: String): Unit = {
-      controller.gameManager = controller.gameManager.roundStrat(input.toInt)
+      controller.gameManager = controller.gameManager.roundStrat(input.toInt) //WebApi/roundStrat
       controller.load()
       controller.changePage(2)
       controller.publish(new UpdateGuiEvent)

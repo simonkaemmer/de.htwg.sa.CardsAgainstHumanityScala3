@@ -2,18 +2,25 @@ package model.gameComponent
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
 import akka.http.scaladsl.server.Directives.*
+import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.fasterxml.jackson.annotation.JsonValue
 import play.api.libs.json.{JsValue, Json}
+
 import scala.concurrent.ExecutionContextExecutor
 import model.gameComponent.BaseImpl.GameManager
+
+import scala.util.{Failure, Success}
 
 
 case object ModelService {
 
   def main(args: Array[String]): Unit = {
     var game = GameManager().dummyData()
+    println(game.gameToJson())
+    game.pickNextPlayer()
+    println(game.gameToJson())
 
     implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
@@ -42,7 +49,8 @@ case object ModelService {
                 "/placeCard" -> "Args: activePlayer: Int, card: AnswerCard",
                 "/pickNextPlayer" -> "Args: None",
                 "/drawCard" -> "Args: None",
-                "/clearRoundAnswer" -> "Args: None"
+                "/clearRoundAnswer" -> "Args: None",
+                "/setKompCards" -> "Args: ???"
               )
             )).toString
 
@@ -52,6 +60,14 @@ case object ModelService {
         get {
           path("game") {
             complete(HttpEntity(ContentTypes.`application/json`, game.gameToJson()))
+          }
+        },
+        post {
+          path("setKompCards") {
+            entity(as[String]) { request =>
+              println("req: " + request)
+              complete(HttpEntity(ContentTypes.`application/json`, game.gameToJson()))
+            }
           }
         },
         post {
@@ -116,7 +132,6 @@ case object ModelService {
         post {
           path("pickNextPlayer") {
             entity(as[String]) { request =>
-              println(request)
               complete(HttpEntity(ContentTypes.`application/json`, game.pickNextPlayer().gameToJson()))
             }
           }
