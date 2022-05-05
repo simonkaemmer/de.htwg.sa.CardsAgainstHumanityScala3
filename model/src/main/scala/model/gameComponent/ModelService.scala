@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.ExecutionContextExecutor
-import model.gameComponent.BaseImpl.GameManager
+import model.gameComponent.BaseImpl.*
 
 import scala.util.{Failure, Success}
 
@@ -42,9 +42,6 @@ case object ModelService {
                 "/roundStrategy" -> "Args: amountOfPlayers: Int",
                 "/createCardDeck" -> "Args: None",
                 "/handOutCards" -> "Args: None",
-                "/givePlayersCargs" -> "listOfPlayersCards: List[AnswerCard]",
-                "/playerHand" -> "Args: listOfAnswerCards: List[AnswerCard]",
-                "/choosePlayerStartCards" -> "Args: amountOfPlayers: Int",
                 "/placeQuestionCard" -> "Args: None",
                 "/placeCard" -> "Args: activePlayer: Int, card: AnswerCard",
                 "/pickNextPlayer" -> "Args: None",
@@ -62,30 +59,21 @@ case object ModelService {
             complete(HttpEntity(ContentTypes.`application/json`, game.gameToJson()))
           }
         },
-        post {
-          path("setKompCards") {
-            entity(as[String]) { request =>
-              println("req: " + request)
-              complete(HttpEntity(ContentTypes.`application/json`, game.gameToJson()))
-            }
-          }
-        },
-        post {
-          path("test") {
-            entity(as[String]) { request =>
-              println("req: " + request)
-              complete(HttpEntity(ContentTypes.`application/json`, game.gameToJson()))
-            }
-          }
-        },
+//        post {
+//          path("setKompCards") {
+//            entity(as[String]) { request =>
+//              // NOT IMPLEMENTED YET
+//            }
+//          }
+//        },   // TODO: Für was brauchen wir das nochmal :D?
         post {
           path("roundStrategy") {
-//            entity(as[String]) { request =>
-//              val json: JsValue = Json.parse(request)
-//              val amountOfPlayers = (json \ "amountOfPlayers").get.toString.toInt
-//
-//            }
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
+            entity(as[String]) { request =>
+              val json: JsValue = Json.parse(request)
+              val amountOfPlayers = (json \ "amountOfPlayers").get.toString.toInt
+              val gameString = (json \ "game").get.toString
+              complete(HttpEntity(ContentTypes.`application/json`, game.gameFromJson(gameString).roundStrat(amountOfPlayers).gameToJson()))
+            }
           }
         },
         post {
@@ -103,21 +91,6 @@ case object ModelService {
           }
         },
         post {
-          path("givePlayerCards") {
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
-          }
-        },
-        post {
-          path("playerHand") {
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
-          }
-        },
-        post {
-          path("choosePlayerStartCards") {
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
-          }
-        },
-        post {
           path("placeQuestionCard") {
             entity(as[String]) { request =>
               complete(HttpEntity(ContentTypes.`application/json`, game.gameFromJson(request).placeQuestionCard().gameToJson()))
@@ -126,13 +99,18 @@ case object ModelService {
         },
         post {
           path("placeCard") {
-            complete(HttpEntity(ContentTypes.`application/json`, "Working!"))
+            entity(as[String]) { request =>
+              val json: JsValue = Json.parse(request)
+              val activePlayer: Int = (json \ "game" \ "activePlayer").get.toString.toInt
+              val card: AnswerCard = AnswerCard((json \ "card").get.toString)
+              complete(HttpEntity(ContentTypes.`application/json`, game.gameFromJson(request).placeCard(activePlayer, card).gameToJson()))
+            }
           }
         },
         post {
           path("pickNextPlayer") {
             entity(as[String]) { request =>
-              complete(HttpEntity(ContentTypes.`application/json`, game.pickNextPlayer().gameToJson()))
+              complete(HttpEntity(ContentTypes.`application/json`, game.gameFromJson(request).pickNextPlayer().gameToJson()))
             }
           }
         },
