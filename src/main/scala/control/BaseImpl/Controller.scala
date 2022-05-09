@@ -3,7 +3,6 @@ package control.BaseImpl
 import com.google.inject.{Guice, Inject, Injector}
 import control.*
 import model.BaseImpl.GameManager
-import fileIoComponent.fileIoJsonImpl.FileIO
 import module.CardsAgainstHumanityModule
 import utils.UndoManager
 
@@ -41,7 +40,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
       HttpRequest(
         method = HttpMethods.POST,
         uri = s"http://$fileIOHttpServer/save",
-        entity = HttpEntity(ContentTypes.`application/json`, gameManager.toString)
+        entity = HttpEntity(ContentTypes.`application/json`, gameManager.kompCardToJson())
       )
     ).onComplete {
       case Success(value) =>
@@ -140,9 +139,11 @@ trait ControllerState {
 
 case class PreSetupState(controller: Controller) extends ControllerState {
 
+
   override def evaluate(input: String): Unit = {
-      controller.gameManager = controller.gameManager.roundStrat(input.toInt) //WebApi/roundStrat
       controller.load()
+    println("HEEEEREEEE   "+ controller.gameManager.kompositumCard)
+      controller.gameManager = controller.gameManager.roundStrat(input.toInt) //WebApi/roundStrat
       controller.changePage(2)
       controller.publish(new UpdateGuiEvent)
       //controller.publish(new UpdateTuiEvent)
