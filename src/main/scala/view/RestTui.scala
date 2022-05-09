@@ -8,7 +8,9 @@ import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
-import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Directives.*
+
+import scala.util.{Failure, Success}
 
 class RestTui(controller: ControllerInterface) {
   implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
@@ -21,21 +23,17 @@ class RestTui(controller: ControllerInterface) {
     println(s"server started: http://$interface:$port")
     val route =
       concat(
-        get {
-          path("") {
-            val apiInfo =
-              """Available API Routes - Uno:
-                |
-                |GET    /new-game/<numOfPlayers>
-                |GET    /set-card/<card>
-                |GET    /get-card
-                |GET    /redo
-                |GET    /undo
-                |GET    /save
-                |GET    /load
-                |GET    /do-step
-                |""".stripMargin
-            complete(HttpEntity(ContentTypes.`application/json`, apiInfo))
+        post {
+          path("eval") {
+            entity(as[String]) { input =>
+              input match{
+                case "quit" =>
+                case "undo" => controller.undo()
+                case "redo" => controller.redo()
+                case _ => controller.eval(input)
+              }
+              complete(HttpEntity(ContentTypes.`application/json`, "working"))
+            }
           }
         }
       )

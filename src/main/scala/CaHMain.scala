@@ -3,6 +3,7 @@ import com.google.inject.{Guice, Injector}
 import control.BaseImpl.Controller
 import view.GUI.SwingGui
 import view.RestTui
+import view.Tui
 
 import scala.io.StdIn.readLine
 
@@ -18,10 +19,6 @@ object CaHMain {
 
   def main(args: Array[String]): Unit = {
    //var input: String = "0"
-
-
-
-
 
 
     gui.open()
@@ -40,12 +37,15 @@ object CaHMain {
 
 
 
-    /*
-    if (args.length>0) input=args(0)
-    else do{
-      input = readLine()
-      tui.processInputLine(input)
-    } while(input != "q")
-    */
+
+//    if (args.length>0) input=args(0)
+//    else {
+//
+//      while(input != "q") {
+//        input = readLine()
+//        tui.processInputLine(input)
+//      }
+//    }
+
   }
 }

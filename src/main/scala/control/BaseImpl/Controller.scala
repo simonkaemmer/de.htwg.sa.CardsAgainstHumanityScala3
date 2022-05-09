@@ -145,7 +145,7 @@ case class PreSetupState(controller: Controller) extends ControllerState {
       controller.gameManager = controller.gameManager.roundStrat(input.toInt) //WebApi/roundStrat
       controller.changePage(2)
       controller.publish(new UpdateGuiEvent)
-      //controller.publish(new UpdateTuiEvent)
+      controller.publish(new UpdateTuiEvent)
       controller.nextState()
   }
 
