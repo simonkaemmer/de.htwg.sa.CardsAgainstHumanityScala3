@@ -28,6 +28,8 @@ trait ModelInterface(val numberOfPlayers: Int,
   def placeQuestionCard(): ModelInterface
 
   def kompCardFromJson(value: String): ModelInterface
+
+  def kompCardToJson(): String
   
   def placeCard(activePlayer: Int, card: AnswerCard): ModelInterface
 

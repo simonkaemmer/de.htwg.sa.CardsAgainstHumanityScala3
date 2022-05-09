@@ -64,7 +64,6 @@ case object FileIOService{
     val bindingFuture = Http().newServerAt(interface, port).bind(route)
 
     val card = fileIO.load()
-    println(card)
 
 
     println("Press return to stop")

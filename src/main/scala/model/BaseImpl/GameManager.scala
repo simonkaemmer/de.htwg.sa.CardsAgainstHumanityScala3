@@ -214,13 +214,18 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
 
   override def kompCardFromJson(input: String): ModelInterface = {
 
-    val json: JsValue = Json.parse(input)
+    println("in komCardFromJson")
 
-    val questionList: List[QuestionCard] = (json \\ "questionCards").map( s => QuestionCard(s.toString)).toList
-    val answerList: List[AnswerCard] = (json \\ "answerCards").map(s => AnswerCard(s.toString)).toList
+    val json = Json.parse(input)
 
-    val allCards: List[Card] = questionList ++ answerList
-    copy(kompositumCard = KompositumCard(allCards))
+    val questCardsJson= (json \ "cardList").head
+    val answerCardJson = (json \ "cardList").last
+
+    val questCards = (questCardsJson \\ "card").map(s => QuestionCard(s.toString)).toList
+    val answerCards = (answerCardJson \\ "card").map(s => AnswerCard(s.toString)).toList
+    val kompCardList: List[Card] = questCards ++ answerCards
+
+    copy(kompositumCard = KompositumCard(kompCardList))
   }
 
   override def kompCardToJson(): String = {
