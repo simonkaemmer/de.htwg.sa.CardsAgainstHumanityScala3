@@ -1,7 +1,7 @@
 package fileIoComponent
 
 import scala.util.Try
-//import model.gameComponent.ModelInterface
+//import model.ModelInterface
 
 trait FileIOInterface {
   def load(): Try[String]

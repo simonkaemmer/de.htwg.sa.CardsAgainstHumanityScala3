@@ -1,4 +1,4 @@
-package model.gameComponent.BaseImpl
+package model.BaseImpl
 
 import com.google.inject.Inject
 

@@ -2,23 +2,23 @@ package control.BaseImpl
 
 import com.google.inject.{Guice, Inject, Injector}
 import control.*
-import model.gameComponent.BaseImpl.GameManager
-import model.gameComponent.ModelInterface
+import model.BaseImpl.GameManager
 import fileIoComponent.fileIoJsonImpl.FileIO
 import module.CardsAgainstHumanityModule
 import utils.UndoManager
 
 import scala.util.{Failure, Success, Try}
 import scala.swing.Publisher
-
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
+
 import scala.concurrent.ExecutionContextExecutor
 import scala.swing.{Color, Publisher}
 import scala.util.{Failure, Success, Try}
 import akka.http.scaladsl.unmarshalling.Unmarshaller
+import model.ModelInterface
 import play.api.libs.json.{JsValue, Json}
 
 class Controller @Inject() (var gameManager: ModelInterface) extends ControllerInterface with Publisher {
@@ -48,7 +48,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
         Unmarshaller.stringUnmarshaller(value.entity).onComplete {
           case Success(value) =>
             if value.equals("Success") then
-              println("success1")
+              println("success1: " + value)
             else
               state = state.failState
           case Failure(_) =>
@@ -71,12 +71,10 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
             if value.equals("Failure") then
               state = state.failState
             else{
-              val cards = value
-              println(cards)
+              println("Cards in loading: " + value)
+              gameManager = gameManager.kompCardFromJson(value)
 
             }
-
-
           case Failure(_) =>
               state = state.failState
         }

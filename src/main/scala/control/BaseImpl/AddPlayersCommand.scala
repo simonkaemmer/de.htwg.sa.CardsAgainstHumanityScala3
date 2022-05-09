@@ -1,8 +1,8 @@
 package control.BaseImpl
 
 import control.ControllerInterface
-import model.gameComponent.BaseImpl.AnswerCard
-import model.gameComponent.BaseImpl.Player
+import model.BaseImpl.AnswerCard
+import model.BaseImpl.Player
 import utils.Command
 
 class AddPlayersCommand(name: String, controller: ControllerInterface) extends Command{

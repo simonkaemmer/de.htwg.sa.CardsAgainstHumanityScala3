@@ -1,6 +1,6 @@
-package model.gameComponent
+package model
 
-import model.gameComponent.BaseImpl.*
+import model.BaseImpl.*
 
 trait ModelInterface(val numberOfPlayers: Int,
                      val numberOfPlayableRounds: Int,
@@ -26,6 +26,8 @@ trait ModelInterface(val numberOfPlayers: Int,
   def choosePlayerStartCards(playerCount: Int): List[AnswerCard]
 
   def placeQuestionCard(): ModelInterface
+
+  def kompCardFromJson(value: String): ModelInterface
 
   def placeCard(activePlayer: Int, card: AnswerCard): ModelInterface
 

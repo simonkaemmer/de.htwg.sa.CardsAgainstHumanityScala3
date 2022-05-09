@@ -1,18 +1,15 @@
-package model.gameComponent
+package model
+
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest}
-import akka.http.scaladsl.server.Directives.*
-import akka.http.scaladsl.unmarshalling.Unmarshaller
-import com.fasterxml.jackson.annotation.JsonValue
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.server.Directives.{as, complete, concat, entity, get, path, post}
 import play.api.libs.json.{JsValue, Json}
 
+import model.BaseImpl._
+
 import scala.concurrent.ExecutionContextExecutor
-import model.gameComponent.BaseImpl.*
-
-import scala.util.{Failure, Success}
-
 
 case object ModelService {
 
@@ -59,13 +56,13 @@ case object ModelService {
             complete(HttpEntity(ContentTypes.`application/json`, game.gameToJson()))
           }
         },
-//        post {
-//          path("setKompCards") {
-//            entity(as[String]) { request =>
-//              // NOT IMPLEMENTED YET
-//            }
-//          }
-//        },   // TODO: Für was brauchen wir das nochmal :D?
+        //        post {
+        //          path("setKompCards") {
+        //            entity(as[String]) { request =>
+        //              // NOT IMPLEMENTED YET
+        //            }
+        //          }
+        //        },   // TODO: Für was brauchen wir das nochmal :D?
         post {
           path("roundStrategy") {
             entity(as[String]) { request =>

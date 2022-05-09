@@ -1,11 +1,12 @@
-package model.gameComponent.BaseImpl
+package model.BaseImpl
 
-import model.gameComponent.BaseImpl.Card
+import model.BaseImpl.Card
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import model.gameComponent.{BaseImpl, ModelInterface}
+import model.BaseImpl._
 import play.api.libs.json.{JsArray, JsBoolean, JsNumber, JsString, JsValue, Json}
 import com.fasterxml.jackson.annotation.JsonValue
+import model.ModelInterface
 
 import scala.collection.IterableOnce
 import scala.language.postfixOps
@@ -223,7 +224,7 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
 
   // Tooling
 
-  def kompCardFromJson(input: String): Unit = {
+  override def kompCardFromJson(input: String): ModelInterface = {
 
     println("in komCardFromJson")
 
@@ -236,10 +237,7 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     val answerCards = (answerCardJson \\ "card").map(s => AnswerCard(s.toString)).toList
     val kompCardList: List[Card] = questCards ++ answerCards
 
-    println(questCards)
-    println(answerCards)
-    println(kompCardList)
-    //KompositumCard(allCards)
+    copy(kompositumCard = KompositumCard(kompCardList))
   }
 
   def playerFromJson(input: String, playerCount: Int): Vector[Player] =

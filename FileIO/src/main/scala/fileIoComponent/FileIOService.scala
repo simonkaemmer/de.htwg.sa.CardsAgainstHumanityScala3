@@ -44,7 +44,10 @@ case object FileIOService{
         get {
           path("load") {
             fileIO.load() match
-              case Success(cards) => complete(HttpEntity(ContentTypes.`application/json`, cards))
+              case Success(cards) => {
+                println("FIO-Service" + cards)
+                complete(HttpEntity(ContentTypes.`application/json`, cards))
+              }
               case Failure(e) => complete("Failure")
           }
         },

@@ -16,26 +16,19 @@ lazy val commonDependencies = Seq(
   dependencies.typesafeplay
 )
 
-lazy val model = (project in file("model"))
-  .settings(
-    name := "CardsAgainstHumanity-Model",
-    version := projectVersion,
-    libraryDependencies ++= commonDependencies,
-  )
-
 lazy val FileIO = (project in file("FileIO"))
-  .dependsOn(model)
   .settings(
     name := "CardsAgainstHumanity-Persistence",
     version := projectVersion,
     libraryDependencies ++= commonDependencies,
+    libraryDependencies += "org.slf4j" % "slf4j-nop" % "2.0.0-alpha7"
   )
 
 
 lazy val root = project
   .in(file("."))
   .aggregate(FileIO)
-  .dependsOn(FileIO, model)
+  .dependsOn(FileIO)
   .settings(
     name := "CardsAgainstHumanity",
     version := projectVersion,
