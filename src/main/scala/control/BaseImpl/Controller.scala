@@ -40,7 +40,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
       HttpRequest(
         method = HttpMethods.POST,
         uri = s"http://$fileIOHttpServer/save",
-        entity = HttpEntity(ContentTypes.`application/json`, "4")
+        entity = HttpEntity(ContentTypes.`application/json`, gameManager.kompCardToJson())
       )
     ).onComplete {
       case Success(value) =>
