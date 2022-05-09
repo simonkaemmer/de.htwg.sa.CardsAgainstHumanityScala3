@@ -29,8 +29,8 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
   implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
   implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
-  val modelHttpServer: String = sys.env.getOrElse("MODELHTTPSERVER", "localhost:8082")
-  val fileIOHttpServer: String = sys.env.getOrElse("FILEHTTPSERVER", "localhost:8084")
+//  val modelHttpServer: String = sys.env.getOrElse("MODELHTTPSERVER", "localhost:8082")
+  val fileIOHttpServer: String = sys.env.getOrElse("FILEIOHTTPSERVER", "localhost:8084")
 
 
   def nextState(): Unit = state = state.nextState
@@ -40,7 +40,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
       HttpRequest(
         method = HttpMethods.POST,
         uri = s"http://$fileIOHttpServer/save",
-        entity = HttpEntity(ContentTypes.`application/json`, gameManager.kompCardToJson())
+        entity = HttpEntity(ContentTypes.`application/json`, "4")
       )
     ).onComplete {
       case Success(value) =>
@@ -142,7 +142,6 @@ case class PreSetupState(controller: Controller) extends ControllerState {
 
   override def evaluate(input: String): Unit = {
       controller.load()
-    println("HEEEEREEEE   "+ controller.gameManager.kompositumCard)
       controller.gameManager = controller.gameManager.roundStrat(input.toInt) //WebApi/roundStrat
       controller.changePage(2)
       controller.publish(new UpdateGuiEvent)

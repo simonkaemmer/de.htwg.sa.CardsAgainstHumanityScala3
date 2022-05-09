@@ -2,7 +2,6 @@ package control
 import com.google.inject.Injector
 import control.BaseImpl.ControllerState
 import model.BaseImpl.GameManager
-import fileIoComponent.fileIoJsonImpl.FileIO
 import model.ModelInterface
 import utils.UndoManager
 

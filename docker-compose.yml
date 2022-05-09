@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   fileio:
-    container_name: "persistence-service"
+    container_name: "fileio-service"
     build:
       context: ./FileIO
       dockerfile: ./Dockerfile
@@ -9,7 +9,7 @@ services:
       - "8084:8084"
     stdin_open: true
     tty: true
-  uno:
+  cah:
     container_name: "cah-service"
     build:
       context: .
@@ -20,4 +20,4 @@ services:
       - fileio
     environment:
       - DISPLAY=host.docker.internal:0
-      - PERSISTENCEHTTPSERVER=persistence-service:8084
+      - FILEIOHTTPSERVER=fileio-service:8084

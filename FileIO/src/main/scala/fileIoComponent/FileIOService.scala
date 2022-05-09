@@ -23,7 +23,7 @@ case object FileIOService{
     implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
-    val interface = "localhost"
+    val interface = "fileio-service"
     val port = 8084
 
     println(s"Game services started @ http://$interface:$port")
@@ -62,5 +62,12 @@ case object FileIOService{
         }
       )
     val bindingFuture = Http().newServerAt(interface, port).bind(route)
+
+    val card = fileIO.load()
+    println(card)
+
+
+    println("Press return to stop")
+    StdIn.readLine()
   }
 }
