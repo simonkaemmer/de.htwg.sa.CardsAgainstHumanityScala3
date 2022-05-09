@@ -142,7 +142,7 @@ case class PreSetupState(controller: Controller) extends ControllerState {
 
   override def evaluate(input: String): Unit = {
       controller.load()
-    println("HEEEEREEEE   "+ controller.gameManager.kompositumCard)
+      println("HEEEEREEEE   "+ controller.gameManager.kompositumCard)
       controller.gameManager = controller.gameManager.roundStrat(input.toInt) //WebApi/roundStrat
       controller.changePage(2)
       controller.publish(new UpdateGuiEvent)

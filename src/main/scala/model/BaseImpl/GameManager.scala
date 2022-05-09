@@ -4,7 +4,7 @@ import model.BaseImpl.Card
 import com.google.inject.Inject
 import com.google.inject.name.Named
 import model.BaseImpl._
-import play.api.libs.json.{JsArray, JsBoolean, JsNumber, JsString, JsValue, Json}
+import play.api.libs.json.{JsArray, JsBoolean, JsNumber, JsString, JsValue, Json, JsObject}
 import com.fasterxml.jackson.annotation.JsonValue
 import model.ModelInterface
 
@@ -156,18 +156,7 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
       "numberOfPlayableRounds" -> JsNumber(numberOfPlayableRounds),
       "numberOfRounds" -> JsNumber(numberOfRounds),
       "activePlayer" -> JsNumber(activePlayer),
-      "kompositumCard" -> JsArray(for card <- kompositumCard.cardList yield {
-        if(card.isInstanceOf[QuestionCard]) {
-          Json.obj(
-            "text" -> JsString(card.toString),
-            "type" -> JsString("Q")
-          )
-        } else {
-          Json.obj(
-            "text" -> JsString(card.toString),
-            "type" -> JsString("A")
-          )
-        }}),
+      "kompositumCard" -> kompCardToJson(),
       "player" -> JsArray(for dude <- player yield Json.obj(
         "name" -> dude.name,
         "state" -> JsBoolean(dude.isAnswering),
@@ -219,25 +208,30 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
     val roundQuestion: String = (json \ "game" \ "roundQuestion").get.toString
 
     copy(numberOfPlayers, numberOfPlayableRounds, numberOfRounds, activePlayer, kompositumCard, player, answerList, questionList, roundAnswerCards, roundQuestion) // TODO: Change to copy constructor
-
   }
 
   // Tooling
 
   override def kompCardFromJson(input: String): ModelInterface = {
 
-    println("in komCardFromJson")
+    val json: JsValue = Json.parse(input)
 
-    val json = Json.parse(input)
+    val questionList: List[QuestionCard] = (json \\ "questionCards").map( s => QuestionCard(s.toString)).toList
+    val answerList: List[AnswerCard] = (json \\ "answerCards").map(s => AnswerCard(s.toString)).toList
 
-    val questCardsJson= (json \ "cardList").head
-    val answerCardJson = (json \ "cardList").last
+    val allCards: List[Card] = questionList ++ answerList
+    copy(kompositumCard = KompositumCard(allCards))
+  }
 
-    val questCards = (questCardsJson \\ "card").map(s => QuestionCard(s.toString)).toList
-    val answerCards = (answerCardJson \\ "card").map(s => AnswerCard(s.toString)).toList
-    val kompCardList: List[Card] = questCards ++ answerCards
-
-    copy(kompositumCard = KompositumCard(kompCardList))
+  override def kompCardToJson(): String = {
+    Json.obj("cardList" -> Json.obj(
+      "questionCards" -> JsArray(for card <- kompositumCard.cardList if card.isInstanceOf[QuestionCard] yield
+        JsString(card.toString)
+      ),
+      "answerCards" -> JsArray(for card <- kompositumCard.cardList if card.isInstanceOf[AnswerCard] yield
+        JsString(card.toString)
+      )
+    )).toString
   }
 
   def playerFromJson(input: String, playerCount: Int): Vector[Player] =
@@ -284,7 +278,7 @@ case class GameManager @Inject() (@Named("Def") override val numberOfPlayers: In
         )
     }
 
-  def dummyData(): GameManager = {
+  def dummyData(): ModelInterface = {
     val numberOfPlayersD: Int = 2
     val numberOfPlayableRoundsD: Int = 10
     val numberOfRoundsD: Int = 3

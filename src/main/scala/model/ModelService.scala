@@ -56,13 +56,20 @@ case object ModelService {
             complete(HttpEntity(ContentTypes.`application/json`, game.gameToJson()))
           }
         },
-        //        post {
-        //          path("setKompCards") {
-        //            entity(as[String]) { request =>
-        //              // NOT IMPLEMENTED YET
-        //            }
-        //          }
-        //        },   // TODO: Für was brauchen wir das nochmal :D?
+        get {
+          path("testKompToJson") {
+            complete(HttpEntity(ContentTypes.`application/json`, game.kompCardToJson()))
+          }
+        },
+        post {
+          path("testKompFromJson") {
+            entity(as[String]) { request =>
+              game = game.kompCardFromJson(request)
+              complete(HttpEntity(ContentTypes.`application/json`, game.kompCardToJson()))
+            }
+
+          }
+        },
         post {
           path("roundStrategy") {
             entity(as[String]) { request =>
