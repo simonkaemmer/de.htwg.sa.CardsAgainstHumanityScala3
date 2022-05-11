@@ -1,5 +1,7 @@
 package model.BaseImpl
 
+
+// TODO: Slick mit eckigen Klammern funkltioniert nicht.--> new create table mit runden klammern
 import model.BaseImpl.Card
 import com.google.inject.Inject
 import com.google.inject.name.Named

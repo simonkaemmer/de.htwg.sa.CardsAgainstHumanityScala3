@@ -24,6 +24,7 @@ case object FileIOService{
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
     val interface = "fileio-service"
+    //val interface = "localhost"
     val port = 8084
 
     println(s"Game services started @ http://$interface:$port")
