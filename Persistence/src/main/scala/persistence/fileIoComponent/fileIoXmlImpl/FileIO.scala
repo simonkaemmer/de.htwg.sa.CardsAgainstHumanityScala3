@@ -1,7 +1,7 @@
-package fileIoComponent.fileIoXmlImpl
+package persistence.fileIoComponent.fileIoXmlImpl
 
 import java.io.{File, PrintWriter}
-import fileIoComponent.FileIOInterface
+import persistence.fileIoComponent.FileIOInterface
 
 import scala.xml.*
 import scala.util.Try

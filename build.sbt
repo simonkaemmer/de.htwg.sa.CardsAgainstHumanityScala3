@@ -16,7 +16,7 @@ lazy val commonDependencies = Seq(
   dependencies.typesafeplay
 )
 
-lazy val FileIO = (project in file("FileIO"))
+lazy val Persistence = (project in file("Persistence"))
   .settings(
     name := "CardsAgainstHumanity-Persistence",
     version := projectVersion,
@@ -27,8 +27,8 @@ lazy val FileIO = (project in file("FileIO"))
 
 lazy val root = project
   .in(file("."))
-  .aggregate(FileIO)
-  .dependsOn(FileIO)
+  .aggregate(Persistence)
+  .dependsOn(Persistence)
   .settings(
     name := "CardsAgainstHumanity",
     version := projectVersion,
@@ -51,3 +51,7 @@ libraryDependencies += ("com.typesafe.akka" %% "akka-http" % akkaHttpVersion).cr
 
 libraryDependencies += "org.slf4j" % "slf4j-nop" % "2.0.0-alpha7"
 
+libraryDependencies += ("com.typesafe.slick" %% "slick" % "3.3.3").cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.slick" %% "slick-hikaricp" % "3.3.3").cross(CrossVersion.for3Use2_13)
+libraryDependencies += "mysql" % "mysql-connector-java" % "8.0.29"
+//libraryDependencies += "com.github.slick.slick" % "slick_3" % "nafg~dottyquery-SNAPSHOT"

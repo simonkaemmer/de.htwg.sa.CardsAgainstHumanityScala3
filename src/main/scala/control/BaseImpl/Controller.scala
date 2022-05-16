@@ -30,7 +30,8 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
   implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
 //  val modelHttpServer: String = sys.env.getOrElse("MODELHTTPSERVER", "localhost:8082")
-  val fileIOHttpServer: String = sys.env.getOrElse("FILEIOHTTPSERVER", "localhost:8084")
+//  val fileIOHttpServer: String = sys.env.getOrElse("FILEIOHTTPSERVER", "localhost:8084")
+val persistenceHttpServer: String = sys.env.getOrElse("PERSISTENCEHTTPSERVER", "localhost:8084")
 
 
   def nextState(): Unit = state = state.nextState
@@ -39,7 +40,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
     Http().singleRequest(
       HttpRequest(
         method = HttpMethods.POST,
-        uri = s"http://$fileIOHttpServer/save",
+        uri = s"http://$persistenceHttpServer/save",
         entity = HttpEntity(ContentTypes.`application/json`, gameManager.kompCardToJson())
       )
     ).onComplete {
@@ -61,7 +62,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
     Http().singleRequest(
       HttpRequest(
         method = HttpMethods.GET,
-        uri = s"http://$fileIOHttpServer/load"
+        uri = s"http://$persistenceHttpServer/load"
       )
     ).onComplete {
       case Success(value) =>

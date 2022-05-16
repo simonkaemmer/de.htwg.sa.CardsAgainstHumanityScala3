@@ -1,6 +1,6 @@
-package fileIoComponent.fileIoJsonImpl
+package persistence.fileIoComponent.fileIoJsonImpl
 
-import fileIoComponent.FileIOInterface
+import persistence.fileIoComponent.FileIOInterface
 import play.api.libs.json.*
 
 import scala.io.Source

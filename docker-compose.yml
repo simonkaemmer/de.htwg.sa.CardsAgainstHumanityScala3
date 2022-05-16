@@ -1,14 +1,48 @@
 version: "3.9"
 services:
-  fileio:
-    container_name: "fileio-service"
+  sqldb:
+    image: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: CAH
+      MYSQL_DATABASE: cah
+      MYSQL_USER: cah
+      MYSQL_PASSWORD: cah
+    volumes:
+      - .:/var/lib/sql/cah
+  persistence:
+    container_name: "persistence-service"
     build:
-      context: ./FileIO
+      context: ./Persistence
       dockerfile: ./Dockerfile
     ports:
       - "8084:8084"
+    environment:
+      - DATABASE_HOST=sqldb:3306
+      - MYSQL_USER=cah
+      - MYSQL_PASSWORD=cah
     stdin_open: true
     tty: true
+
+
+
+
+
+#  fileio:
+#    container_name: "fileio-service"
+#    build:
+#      context: Persistence
+#      dockerfile: ./Dockerfile
+#    ports:
+#      - "8084:8084"
+#    stdin_open: true
+#    tty: true
+
+
+
+
   cah:
     container_name: "cah-service"
     build:

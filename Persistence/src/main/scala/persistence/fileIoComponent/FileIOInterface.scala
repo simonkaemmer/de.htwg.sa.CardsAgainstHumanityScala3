@@ -1,7 +1,6 @@
-package fileIoComponent
+package persistence.fileIoComponent
 
 import scala.util.Try
-//import model.ModelInterface
 
 trait FileIOInterface {
   def load(): Try[String]

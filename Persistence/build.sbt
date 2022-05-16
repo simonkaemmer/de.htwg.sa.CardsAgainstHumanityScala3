@@ -24,3 +24,7 @@ libraryDependencies += ("com.typesafe.akka" %% "akka-stream" % akkaVersion).cros
 libraryDependencies += ("com.typesafe.akka" %% "akka-actor" % akkaVersion).cross(CrossVersion.for3Use2_13)
 libraryDependencies += ("com.typesafe.akka" %% "akka-http" % akkaHttpVersion).cross(CrossVersion.for3Use2_13)
 libraryDependencies += "org.slf4j" % "slf4j-nop" % "2.0.0-alpha7"
+libraryDependencies += ("com.typesafe.slick" %% "slick" % "3.3.3").cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.slick" %% "slick-hikaricp" % "3.3.3").cross(CrossVersion.for3Use2_13)
+libraryDependencies += "mysql" % "mysql-connector-java" % "8.0.29"
+//libraryDependencies += "com.github.slick.slick" % "slick_3" % "nafg~dottyquery-SNAPSHOT"

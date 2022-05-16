@@ -5,9 +5,9 @@ import com.google.inject.name.Names
 import control.BaseImpl.Controller
 import control.ControllerInterface
 import model.BaseImpl.GameManager
-import fileIoComponent.FileIOInterface
-import fileIoComponent.fileIoJsonImpl.FileIO
 import model.ModelInterface
+import persistence.fileIoComponent.FileIOInterface
+import persistence.fileIoComponent.fileIoJsonImpl.FileIO
 
 class CardsAgainstHumanityModule extends AbstractModule {
   val defPlayers: Int = 2

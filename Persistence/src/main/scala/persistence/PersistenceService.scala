@@ -1,36 +1,33 @@
-package fileIoComponent
-
-import fileIoComponent.fileIoJsonImpl.FileIO
-import play.api.libs.json.Json
-import scala.util.{Failure, Success}
-import fileIoComponent.fileIoJsonImpl.FileIO
-
+package persistence
 
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.server.Directives._
-import scala.io.StdIn
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.server.Directives.{as, complete, concat, entity, get, path, post}
+import fileIoComponent.fileIoJsonImpl.FileIO
+
+
 import scala.concurrent.ExecutionContextExecutor
+import scala.io.StdIn
+import scala.util.{Failure, Success}
 
-
-case object FileIOService{
+case object PersistenceService {
 
   def main(args: Array[String]): Unit = {
-    val fileIO = FileIO()
+    val persistence = Slick
 
     implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
-    val interface = "fileio-service"
+    val interface = "persistence-service"
     //val interface = "localhost"
     val port = 8084
 
     println(s"Game services started @ http://$interface:$port")
 
     val route =
-      concat (
+      concat(
         get {
           path("") {
             val apiInfo =
@@ -44,7 +41,7 @@ case object FileIOService{
         },
         get {
           path("load") {
-            fileIO.load() match
+            persistence.load() match
               case Success(cards) => {
                 println("FIO-Service" + cards)
                 complete(HttpEntity(ContentTypes.`application/json`, cards))
@@ -55,7 +52,7 @@ case object FileIOService{
         post {
           path("save") {
             entity(as[String]) { cards =>
-              fileIO.save(cards) match
+              persistence.save(cards) match
                 case Success(s) => complete("Success")
                 case Failure(e) => complete("Failure")
             }
@@ -64,7 +61,7 @@ case object FileIOService{
       )
     val bindingFuture = Http().newServerAt(interface, port).bind(route)
 
-    val card = fileIO.load()
+    val card = persistence.load()
 
 
     println("Press return to stop")
