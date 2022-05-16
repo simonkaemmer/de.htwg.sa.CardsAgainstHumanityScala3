@@ -1,15 +1,15 @@
 package view.GUI.Pages
 
 import java.awt.{Color, Toolkit}
-
-import scala.swing._
+import scala.swing.*
 import scala.swing.{BorderPanel, Button, ComboBox, Dimension, FlowPanel, Label}
-import control.ControllerInterface
+import control.{ControllerInterface, UpdateGuiEvent}
+
 import javax.swing.ImageIcon
 import scala.swing.Swing.EmptyBorder
 import view.GUI.InfoBar
 
-import scala.swing.event._
+import scala.swing.event.*
 
 class StartPage(controller: ControllerInterface, infobar: InfoBar) extends BorderPanel {
 
@@ -65,7 +65,7 @@ class StartPage(controller: ControllerInterface, infobar: InfoBar) extends Borde
 
   reactions += {
     case ButtonClicked(startBtn) => {
-
+      controller.publish(new UpdateGuiEvent)
       if(anzahlSpielerCb.item == 0) {
         infobar.background = Color.RED;
         infobar.foreground = Color.WHITE;

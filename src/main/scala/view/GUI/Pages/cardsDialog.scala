@@ -56,7 +56,7 @@ class cardsDialog(controller: ControllerInterface, infobar: InfoBar) extends Dia
         karten.repaint()
       }
     case ButtonClicked(b) if b==weiterBtn=> {
-      controller.save()
+//      controller.save()
       controller.eval("weiter")
       this.close()
     }

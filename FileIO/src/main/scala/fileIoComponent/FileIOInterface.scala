@@ -1,10 +1,10 @@
 package fileIoComponent
 
 import scala.util.Try
-import model.gameComponent.ModelInterface
+//import model.ModelInterface
 
 trait FileIOInterface {
-  def load(gameMan: ModelInterface): Try[ModelInterface]
+  def load(): Try[String]
 
-  def save(game: ModelInterface): Try[Unit]
+  def save(game: String): Try[Unit]
 }

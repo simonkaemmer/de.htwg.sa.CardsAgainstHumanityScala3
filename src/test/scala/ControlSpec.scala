@@ -1,5 +1,5 @@
 import control.BaseImpl.{AddCardsQuest, AnswerState, Controller, FinishState, PreSetupState, SetupState}
-import model.gameComponent.BaseImpl
+import model.BaseImpl
 import org.scalatest._
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
@@ -18,7 +18,7 @@ class ControlSpec extends AnyWordSpec with Matchers with GivenWhenThen {
       "test Strategy"in{
         controller.gameManager = controller.gameManager.roundStrat(2)
         controller.getGameManager.numberOfPlayers.shouldBe(2)
-        controller.getGameManager.numberOfPlayableRounds.shouldBe(0)
+        controller.getGameManager.numberOfPlayableRounds.shouldBe(10)
       }
 
     "notify the observer after evaluation" in {
@@ -57,28 +57,20 @@ class ControlSpec extends AnyWordSpec with Matchers with GivenWhenThen {
 
       controller.state = SetupState(controller)
       controller.nextState()
-      //controller.gameManager = controller.getGameManager.copy(numberOfRounds = 3)
       controller.state shouldBe (AnswerState(controller))
 
       controller.state = SetupState(controller)
       controller.nextState()
-      //controller.gameManager = controller.getGameManager.copy(numberOfRounds = 6)
       controller.state shouldBe (AnswerState(controller))
-      controller.nextState()
-      controller.state shouldBe FinishState(controller)
-
     }
 
     "return the correct String for every State" in {
       controller.state = PreSetupState(controller)
       controller.stateAsString() shouldBe("PreSetupGame")
-
       controller.state = SetupState(controller)
       controller.stateAsString() shouldBe "SetupGame"
-
       controller.state = AnswerState(controller)
       controller.stateAsString() shouldBe "AnswerState"
-
       controller.state = FinishState(controller)
       controller.stateAsString() shouldBe "FinishState"
     }
@@ -90,14 +82,12 @@ class ControlSpec extends AnyWordSpec with Matchers with GivenWhenThen {
       controller.eval("Dirk")
       controller.getGameManager.player(1).name shouldBe "Dirk"
       controller.getGameManager.player.length shouldBe 2
-
       controller.getGameManager.player(0).getCards.length shouldBe(7)
       controller.getGameManager.player(1).getCards.length shouldBe(7)
 
     }
 
     "place a question card "in {
-      //controller.gameManager = controller.getGameManager.copy(numberOfRounds = 0)
       controller.eval("2")
       controller.getGameManager.roundQuestion shouldBe a [String]
       controller.state shouldBe(AnswerState)(controller)
@@ -110,9 +100,6 @@ class ControlSpec extends AnyWordSpec with Matchers with GivenWhenThen {
       controller.eval("2")
       controller.getGameManager.roundAnswerCards.size shouldBe(2)
       controller.getGameManager.activePlayer shouldBe(0)
-      //controller.gameManager = controller.getGameManager.copy(numberOfRounds = 10)
-      controller.nextState()
-      controller.state shouldBe FinishState(controller)
     }
 
     "Should change State to finish" in {
@@ -120,9 +107,6 @@ class ControlSpec extends AnyWordSpec with Matchers with GivenWhenThen {
       controller.eval("")
       controller.getGameManager.roundAnswerCards shouldBe empty
       controller.getGameManager.roundQuestion shouldNot be (0)
-      //controller.gameManager = controller.getGameManager.copy(numberOfPlayableRounds = 6)
-      //controller.gameManager = controller.getGameManager.copy(numberOfRounds = 7)
-
     }
   }
 }

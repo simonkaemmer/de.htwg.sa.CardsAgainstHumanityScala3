@@ -16,26 +16,19 @@ lazy val commonDependencies = Seq(
   dependencies.typesafeplay
 )
 
-lazy val model = (project in file("model"))
-  .settings(
-    name := "CardsAgainstHumanity-Model",
-    version := projectVersion,
-    libraryDependencies ++= commonDependencies,
-  )
-
 lazy val FileIO = (project in file("FileIO"))
-  .dependsOn(model)
   .settings(
     name := "CardsAgainstHumanity-Persistence",
     version := projectVersion,
     libraryDependencies ++= commonDependencies,
+    libraryDependencies += "org.slf4j" % "slf4j-nop" % "2.0.0-alpha7"
   )
 
 
 lazy val root = project
   .in(file("."))
   .aggregate(FileIO)
-  .dependsOn(FileIO, model)
+  .dependsOn(FileIO)
   .settings(
     name := "CardsAgainstHumanity",
     version := projectVersion,
@@ -47,3 +40,14 @@ lazy val commonSettings = Seq(
   scalaVersion := scala3Version,
   organization := "de.htwg.sa",
 )
+
+val akkaVersion = "2.6.19"
+val akkaHttpVersion = "10.2.9"
+
+libraryDependencies += ("com.typesafe.akka" %% "akka-actor-typed" % akkaVersion).cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.akka" %% "akka-stream" % akkaVersion).cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.akka" %% "akka-actor" % akkaVersion).cross(CrossVersion.for3Use2_13)
+libraryDependencies += ("com.typesafe.akka" %% "akka-http" % akkaHttpVersion).cross(CrossVersion.for3Use2_13)
+
+libraryDependencies += "org.slf4j" % "slf4j-nop" % "2.0.0-alpha7"
+
