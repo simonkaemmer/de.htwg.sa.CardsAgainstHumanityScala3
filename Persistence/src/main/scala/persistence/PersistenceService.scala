@@ -18,6 +18,7 @@ case object PersistenceService:
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
     val interface = "persistence-service"
+    //val interface = "localhost"
     val port = 8084
 
     val route =

@@ -54,14 +54,12 @@ object Slick extends PersistenceInterface:
     }
 
   override def load(): Try[String] =
-    Try {
-      database.run(questionCardsTable.result).map(_.foreach {
-        case (questionCards) =>
-          println("Name: " + questionCards)
 
+    database.run(questionCardsTable.result).map(_.foreach {
+      case (name) =>
+        println(name)
+    })
 
-      })
-      ""
-    }
+    Try[String] {""}
 
 
