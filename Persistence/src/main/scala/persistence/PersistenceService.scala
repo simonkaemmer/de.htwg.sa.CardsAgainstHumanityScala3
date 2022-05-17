@@ -18,7 +18,7 @@ case object PersistenceService:
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
     val interface = "persistence-service"
-    val port = 8085
+    val port = 8084
 
     val route =
       concat(

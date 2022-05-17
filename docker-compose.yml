@@ -18,7 +18,7 @@ services:
       context: ./Persistence
       dockerfile: ./Dockerfile
     ports:
-      - "8085:8085"
+      - "8084:8084"
     environment:
       - DATABASE_HOST=sqldb:3306
       - MYSQL_USER=cah
