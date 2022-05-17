@@ -1,5 +1,5 @@
 package persistence
-import persistence.sqlTables.CardsTable
+import persistence.sqlTables.*
 
 import scala.util.Try
 import slick.dbio.{DBIO, Effect}
@@ -27,34 +27,41 @@ object Slick extends PersistenceInterface:
     password = databasePassword
   )
 
-  val gameTable = TableQuery.apply[CardsTable]
+  val questionCardsTable = TableQuery.apply[QuestionCardsTable]
+  val answerCardsTable = TableQuery.apply[AnswerCardsTable]
 
-  val setup: DBIOAction[Unit, NoStream, Effect.Schema] = DBIO.seq(gameTable.schema.createIfNotExists)
-  database.run(setup)
+  val questionCardsSetup: DBIOAction[Unit, NoStream, Effect.Schema] = DBIO.seq(questionCardsTable.schema.createIfNotExists)
+  val answerCardsSetup: DBIOAction[Unit, NoStream, Effect.Schema] = DBIO.seq(questionCardsTable.schema.createIfNotExists)
+
+  database.run(questionCardsSetup)
+  database.run(answerCardsSetup)
 
   override def save(json: String): Try[Unit] =
     println("Saving cards in MySQL")
-    val gameJson = Json.parse(json)
+    val cardsJson = Json.parse(json)
+    val questCardsJson= (cardsJson \ "cardList").head
+    val answerCardJson = (cardsJson \ "cardList").last
     Try{
-      database.run(gameTable += (
-        0,
-        (gameJson \ "game" \ "questionCards").as[List[String]].mkString(","),
-        (gameJson \ "game" \ "answerCards").as[List[String]].mkString(",")
-      ))
-      println(gameJson)
+      database.run(questionCardsTable ++= (
+        (questCardsJson \\ "card").map(s => s.toString).toSeq
+        ))
+
+      database.run(answerCardsTable ++= (
+        (answerCardJson \\ "card").map(s => s.toString).toSeq
+        ))
+
+      println(cardsJson)
     }
 
   override def load(): Try[String] =
     Try {
-      val actionQuery = sql"""SELECT * FROM CARDS ORDER BY ID DESC LIMIT 1""".as[(Int,String, String)]
-      val result = Await.result(database.run(actionQuery), 2.second)
-      println(result.toString)
-      Json.obj("cardList" -> Json.obj(
-        "questionCards" -> JsArray(for card <- result(0)(1) yield
-          JsString(card.toString)
-        ),
-        "answerCards" -> JsArray(for card <- result(0)(2) yield
-          JsString(card.toString)
-        )
-      )).toString
+      database.run(questionCardsTable.result).map(_.foreach {
+        case (questionCards) =>
+          println("Name: " + questionCards)
+
+
+      })
+      ""
     }
+
+

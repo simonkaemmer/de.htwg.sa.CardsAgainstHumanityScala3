@@ -2,9 +2,15 @@ package persistence.sqlTables
 
 import slick.jdbc.MySQLProfile.api._
 
-class CardsTable(tag: Tag) extends Table[(Int, String, String)](tag, "CARDS"):
-  def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+class QuestionCardsTable(tag: Tag) extends Table[(String)](tag, "QUESTIONCARDS"):
   def questionCards = column[String]("QUESTION_CARDS")
+
+
+  override def * = (questionCards)
+
+
+
+class AnswerCardsTable(tag: Tag) extends Table[(String)](tag, "ANSWERCARDS"):
   def answerCards = column[String]("ANSWER_CARDS")
 
-  override def * = (id, questionCards, answerCards)
+  override def * = (answerCards)
