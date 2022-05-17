@@ -7,24 +7,18 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives.{as, complete, concat, entity, get, path, post}
 import fileIoComponent.fileIoJsonImpl.FileIO
 
-
 import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
 import scala.util.{Failure, Success}
 
-case object PersistenceService {
-
-  def main(args: Array[String]): Unit = {
+case object PersistenceService:
+  def main(args: Array[String]): Unit =
     val persistence = Slick
-
     implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
     val interface = "persistence-service"
-    //val interface = "localhost"
-    val port = 8084
-
-    println(s"Game services started @ http://$interface:$port")
+    val port = 8085
 
     val route =
       concat(
@@ -41,17 +35,19 @@ case object PersistenceService {
         },
         get {
           path("load") {
+            println("LOAD 1")
             persistence.load() match
-              case Success(cards) => {
-                println("FIO-Service" + cards)
-                complete(HttpEntity(ContentTypes.`application/json`, cards))
-              }
-              case Failure(e) => complete("Failure")
+              case Success(cards) => complete(HttpEntity(ContentTypes.`application/json`, cards))
+              case Failure(e) =>
+                println(e.printStackTrace())
+                complete("Failure")
           }
         },
         post {
           path("save") {
             entity(as[String]) { cards =>
+              println("HERE 1")
+              println(cards)
               persistence.save(cards) match
                 case Success(s) => complete("Success")
                 case Failure(e) => complete("Failure")
@@ -59,12 +55,9 @@ case object PersistenceService {
           }
         }
       )
-    val bindingFuture = Http().newServerAt(interface, port).bind(route)
 
-    val card = persistence.load()
+    Http().newServerAt(interface, port).bind(route)
 
-
+    println(s"FileIO service started: http://$interface:$port")
     println("Press return to stop")
     StdIn.readLine()
-  }
-}

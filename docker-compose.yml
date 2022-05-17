@@ -18,16 +18,13 @@ services:
       context: ./Persistence
       dockerfile: ./Dockerfile
     ports:
-      - "8084:8084"
+      - "8085:8085"
     environment:
       - DATABASE_HOST=sqldb:3306
       - MYSQL_USER=cah
       - MYSQL_PASSWORD=cah
     stdin_open: true
     tty: true
-
-
-
 
 
 #  fileio:
@@ -40,9 +37,6 @@ services:
 #    stdin_open: true
 #    tty: true
 
-
-
-
   cah:
     container_name: "cah-service"
     build:
@@ -51,7 +45,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - fileio
+      - persistence
     environment:
       - DISPLAY=host.docker.internal:0
       - FILEIOHTTPSERVER=fileio-service:8084
