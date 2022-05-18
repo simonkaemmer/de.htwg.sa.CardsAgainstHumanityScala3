@@ -27,27 +27,23 @@ object Slick extends PersistenceInterface:
     password = databasePassword
   )
 
-  val questionCardsTable = TableQuery.apply[QuestionCardsTable]
-  val answerCardsTable = TableQuery.apply[AnswerCardsTable]
-
-  val questionCardsSetup: DBIOAction[Unit, NoStream, Effect.Schema] = DBIO.seq(questionCardsTable.schema.createIfNotExists)
-  val answerCardsSetup: DBIOAction[Unit, NoStream, Effect.Schema] = DBIO.seq(questionCardsTable.schema.createIfNotExists)
-
-  database.run(questionCardsSetup)
-  database.run(answerCardsSetup)
+  val questionCardsTable = TableQuery[QuestionCardsTable]
+  val answerCardsTable = TableQuery[AnswerCardsTable]
+  database.run(questionCardsTable.schema.createIfNotExists)
+  database.run(answerCardsTable.schema.createIfNotExists)
 
   override def save(json: String): Try[Unit] =
     println("Saving cards in MySQL")
     val cardsJson = Json.parse(json)
-    val questCardsJson= (cardsJson \ "cardList").head
-    val answerCardJson = (cardsJson \ "cardList").last
+    val questCardsJson = (cardsJson \ "cardList").head
+    val answerCardsJson = (cardsJson \ "cardList").last
     Try{
       database.run(questionCardsTable ++= (
         (questCardsJson \\ "card").map(s => s.toString).toSeq
         ))
 
       database.run(answerCardsTable ++= (
-        (answerCardJson \\ "card").map(s => s.toString).toSeq
+        (answerCardsJson \\ "card").map(s => s.toString).toSeq
         ))
 
       println(cardsJson)
@@ -55,10 +51,10 @@ object Slick extends PersistenceInterface:
 
   override def load(): Try[String] =
 
-    database.run(questionCardsTable.result).map(_.foreach {
-      case (name) =>
-        println(name)
-    })
+    Try{
+      val actionQuery = sql"""SELECT * FROM QUESTIONCARDS LIMIT 1""".as[String]
+      println(actionQuery.toString)
+    }
 
     Try[String] {""}
 
