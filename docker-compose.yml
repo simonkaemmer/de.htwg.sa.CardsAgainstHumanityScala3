@@ -14,6 +14,9 @@ services:
       MYSQL_PASSWORD: cah
     volumes:
       - .:/var/lib/sql/cah
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+
   persistence:
     container_name: "persistence-service"
     build:
@@ -23,10 +26,13 @@ services:
       - "8084:8084"
     environment:
       - DATABASE_HOST=sqldb:3306
-      - MYSQL_USER=cah
-      - MYSQL_PASSWORD=cah
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=CAH
     stdin_open: true
     tty: true
+    depends_on:
+      sqldb:
+        condition: service_healthy
 
 
 #  fileio:
@@ -50,4 +56,4 @@ services:
       - persistence
     environment:
       - DISPLAY=host.docker.internal:0
-      - FILEIOHTTPSERVER=fileio-service:8084
+      - PERSISTENCEHTTPSERVER=persistence-service:8084

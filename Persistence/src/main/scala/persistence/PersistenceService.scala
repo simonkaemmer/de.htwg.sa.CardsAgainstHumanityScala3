@@ -36,7 +36,8 @@ case object PersistenceService:
         },
         get {
           path("load") {
-            println("LOAD 1")
+            println("loading Cards")
+            
             persistence.load() match
               case Success(cards) => complete(HttpEntity(ContentTypes.`application/json`, cards))
               case Failure(e) =>
@@ -46,8 +47,9 @@ case object PersistenceService:
         },
         post {
           path("save") {
+            println("saving Cards")
+            
             entity(as[String]) { cards =>
-              println("HERE 1")
               println(cards)
               persistence.save(cards) match
                 case Success(s) => complete("Success")
