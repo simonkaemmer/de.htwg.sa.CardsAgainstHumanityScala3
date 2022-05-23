@@ -65,10 +65,10 @@ object Slick extends PersistenceInterface :
 
       Json.obj("cardList" -> Json.arr( Json.obj(
         "questionCards" -> JsArray(for card <- resultQ yield
-          Json.obj("Card" -> JsString(card.toString))
+          Json.obj("card" -> JsString(card.toString))
         )),
         Json.obj("answerCards" -> JsArray(for card <- resultA yield
-          Json.obj("Card" -> JsString(card.toString))
+          Json.obj("card" -> JsString(card.toString))
         ))
       )).toString
     }
