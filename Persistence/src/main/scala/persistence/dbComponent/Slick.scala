@@ -1,6 +1,7 @@
-package persistence
+package persistence.dbComponent
 
-import persistence.sqlTables.*
+import persistence.dbComponent.sqlTables.*
+import persistence.PersistenceInterface
 
 import scala.util.Try
 import slick.dbio.{DBIO, Effect}
@@ -15,6 +16,9 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}
 import scala.util.{Failure, Success}
+
+import scala.concurrent.Await
+import scala.util.Try
 
 object Slick extends PersistenceInterface :
   val databaseUrl: String = "jdbc:mysql://" + sys.env.getOrElse("DATABASE_HOST", "localhost:3306") + "/" + sys.env.getOrElse("MYSQL_DATABASE", "cah") + "?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true"
@@ -63,7 +67,7 @@ object Slick extends PersistenceInterface :
       val queryA = (sql"""SELECT * FROM ANSWERCARDS """).as[(String)]
       val resultA = Await.result(database.run(queryA), 2.second)
 
-      Json.obj("cardList" -> Json.arr( Json.obj(
+      Json.obj("cardList" -> Json.arr(Json.obj(
         "questionCards" -> JsArray(for card <- resultQ yield
           Json.obj("card" -> JsString(card.toString))
         )),
@@ -73,4 +77,11 @@ object Slick extends PersistenceInterface :
       )).toString
     }
 
-
+  override def delete(): Try[Unit] =
+    println("Deleting game in MySQL")
+    Try{
+      val queryQ = (sql"""DELETE FROM QUESTIONCARDS""").as[Unit]
+      val queryA = (sql"""DELETE FROM ANSWERCARDS""").as[Unit]
+      database.run(queryQ)
+      database.run(queryA)
+    }

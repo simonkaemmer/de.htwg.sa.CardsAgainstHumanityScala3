@@ -16,7 +16,8 @@ lazy val commonDependencies = Seq(
   dependencies.typesafeplay,
   dependencies.slf4jNop,
   dependencies.mysql,
-  dependencies.githubSlick
+  dependencies.githubSlick,
+  dependencies.mongoDb
 )
 
 lazy val Persistence = (project in file("Persistence"))
