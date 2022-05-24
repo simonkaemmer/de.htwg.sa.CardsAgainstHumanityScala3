@@ -48,7 +48,7 @@ object Slick extends PersistenceInterface :
     val answerCardsJson = (cardsJson \ "cardList").last
     Try {
       database.run(questionCardsTable ++= (
-        (questCardsJson \\ "card").map(s => s.toString).toSeq
+        (questCardsJson \\ "card").map(s => s.toString.replace("\"", "")).toSeq
         ))
 
       database.run(answerCardsTable ++= (

@@ -14,8 +14,8 @@ import scala.util.{Failure, Success}
 
 case object PersistenceService:
   def main(args: Array[String]): Unit =
-    //val persistence = Slick
-    val persistence = MongoDB
+    val persistence = Slick
+    // val persistence = MongoDB
 
     implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
