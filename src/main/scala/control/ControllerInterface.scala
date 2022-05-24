@@ -10,6 +10,7 @@ import scala.swing.Publisher
 trait ControllerInterface extends Publisher{
 
   def nextState(): Unit
+  def fallback(): Unit
   def changePage(page: Int): Unit
   def eval(input: String): Unit
   def stateAsString(): String

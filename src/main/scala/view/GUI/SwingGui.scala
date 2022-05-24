@@ -74,6 +74,11 @@ class SwingGui(controller: ControllerInterface) extends Frame {
 //    controller.save()
   }
 
+  def backToStart(): Unit = {
+    controller.fallback()
+    controller.publish(new UpdateGuiEvent)
+  }
+
   menuBar = new MenuBar {
     background = Color.BLACK
     border = EmptyBorder
@@ -82,6 +87,7 @@ class SwingGui(controller: ControllerInterface) extends Frame {
 
       contents += new MenuItem(Action("Quit") {System.exit(0)})
       contents += new MenuItem(Action("Reload") {update()})
+      contents += new MenuItem(Action("Back to start") {backToStart()})
     }
   }
 }

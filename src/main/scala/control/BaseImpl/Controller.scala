@@ -35,6 +35,7 @@ val persistenceHttpServer: String = sys.env.getOrElse("PERSISTENCEHTTPSERVER", "
 
 
   def nextState(): Unit = state = state.nextState
+  def fallback(): Unit = state  = state.fallback
 
   def save(): Unit =
     Http().singleRequest(
@@ -106,6 +107,11 @@ val persistenceHttpServer: String = sys.env.getOrElse("PERSISTENCEHTTPSERVER", "
 
   def getCurrentStateAsString: String = {state.stateString}
 
+//  def loadFromFile(): String = {
+//    //controller.save()
+//    ""
+//  }
+
 
   def undo(): Unit = {
     val result = undoManager.undoStep()
@@ -135,6 +141,8 @@ trait ControllerState {
 
   def nextState: ControllerState
 
+  def fallback: ControllerState
+
   def failState: ControllerState
 }
 
@@ -142,6 +150,7 @@ case class PreSetupState(controller: Controller) extends ControllerState {
 
 
   override def evaluate(input: String): Unit = {
+
       controller.load()
       controller.gameManager = controller.gameManager.roundStrat(input.toInt) //WebApi/roundStrat
       controller.changePage(2)
@@ -159,6 +168,10 @@ case class PreSetupState(controller: Controller) extends ControllerState {
   override def equals(that: Any): Boolean = ???
 
   override def failState: ControllerState = FileFailState(controller)
+
+  override def fallback: ControllerState = {
+    PreSetupState(controller)
+  }
 }
 
 case class AddCardsQuest(controller: Controller) extends ControllerState {
@@ -181,6 +194,7 @@ case class AddCardsQuest(controller: Controller) extends ControllerState {
   override def nextState: ControllerState = SetupState(controller)
 
   override def failState: ControllerState = FileFailState(controller)
+  override def fallback: ControllerState = PreSetupState(controller)
 }
 
 case class SetupState(controller: Controller) extends ControllerState {
@@ -208,6 +222,8 @@ case class SetupState(controller: Controller) extends ControllerState {
   override def nextState: ControllerState = AnswerState(controller)
 
   override def failState: ControllerState = FileFailState(controller)
+
+  override def fallback: ControllerState = PreSetupState(controller)
 }
 
 case class AnswerState(controller: Controller) extends ControllerState {
@@ -242,6 +258,7 @@ case class AnswerState(controller: Controller) extends ControllerState {
   override def stateString: String = controller.getGameManager.roundQuestion
 
   override def failState: ControllerState = FileFailState(controller)
+  override def fallback: ControllerState = PreSetupState(controller)
 
   override def nextState: ControllerState = {
     if(controller.getGameManager.numberOfRounds > controller.getGameManager.numberOfPlayableRounds) {
@@ -262,6 +279,7 @@ case class FinishState(controller: Controller) extends ControllerState {
 
   override def equals(that: Any): Boolean = ???
   override def failState: ControllerState = FileFailState(controller)
+  override def fallback: ControllerState = PreSetupState(controller)
 }
 
 case class FileFailState(controller: Controller) extends ControllerState {
@@ -279,5 +297,6 @@ case class FileFailState(controller: Controller) extends ControllerState {
 
     this
   }
+  override def fallback: ControllerState = PreSetupState(controller)
 
 }
