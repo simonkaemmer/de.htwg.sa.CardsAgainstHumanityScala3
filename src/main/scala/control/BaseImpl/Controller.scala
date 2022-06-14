@@ -31,7 +31,7 @@ class Controller @Inject() (var gameManager: ModelInterface) extends ControllerI
 
 //  val modelHttpServer: String = sys.env.getOrElse("MODELHTTPSERVER", "localhost:8082")
 //  val fileIOHttpServer: String = sys.env.getOrElse("FILEIOHTTPSERVER", "localhost:8084")
-val persistenceHttpServer: String = sys.env.getOrElse("PERSISTENCEHTTPSERVER", "localhost:8084")
+  val persistenceHttpServer: String = sys.env.getOrElse("PERSISTENCEHTTPSERVER", "localhost:8084")
 
 
   def nextState(): Unit = state = state.nextState

@@ -9,6 +9,9 @@ import play.api.libs.json.{JsArray, JsBoolean, JsNumber, JsString, JsValue, Json
 import slick.lifted.TableQuery
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api.*
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.concurrent.duration.Duration
 
 import scala.:+
 import scala.collection.IterableOnce.iterableOnceExtensionMethods
@@ -58,16 +61,15 @@ object Slick extends PersistenceInterface :
       println(cardsJson)
     }
 
-  override def load(): Try[String] =
+  override def load(): Future[String] =
 
-    Try {
       val queryQ = (sql"""SELECT * FROM QUESTIONCARDS """).as[(String)]
-      val resultQ = Await.result(database.run(queryQ), 2.second)
+      val resultQ = Await.result(database.run(queryQ), Duration.Inf)
 
       val queryA = (sql"""SELECT * FROM ANSWERCARDS """).as[(String)]
-      val resultA = Await.result(database.run(queryA), 2.second)
+      val resultA = Await.result(database.run(queryA), Duration.Inf)
 
-      Json.obj("cardList" -> Json.arr(Json.obj(
+      val finalResult = Json.obj("cardList" -> Json.arr(Json.obj(
         "questionCards" -> JsArray(for card <- resultQ yield
           Json.obj("card" -> JsString(card.toString))
         )),
@@ -75,7 +77,8 @@ object Slick extends PersistenceInterface :
           Json.obj("card" -> JsString(card.toString))
         ))
       )).toString
-    }
+
+      Future(finalResult)
 
   override def delete(): Try[Unit] =
     println("Deleting game in MySQL")

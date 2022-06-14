@@ -7,6 +7,10 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives.{as, complete, concat, entity, get, path, post}
 import fileIoComponent.fileIoJsonImpl.FileIO
 import persistence.dbComponent.{MongoDB, Slick}
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.Await
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
@@ -17,7 +21,7 @@ case object PersistenceService:
    // val persistence = Slick
     val persistence = MongoDB
 
-    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
+    implicit val system = ActorSystem(Behaviors.empty, "my-system")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
     val interface = "persistence-service"
@@ -40,12 +44,7 @@ case object PersistenceService:
         get {
           path("load") {
             println("loading Cards")
-            
-            persistence.load() match
-              case Success(cards) => complete(HttpEntity(ContentTypes.`application/json`, cards))
-              case Failure(e) =>
-                println(e.printStackTrace())
-                complete("Failure")
+            complete(HttpEntity(ContentTypes.`application/json`, Await.result(persistence.load(), Duration.Inf)))
           }
         },
         get {
@@ -71,7 +70,16 @@ case object PersistenceService:
         }
       )
 
-    Http().newServerAt(interface, port).bind(route)
+    val bindingFuture = Http().newServerAt(interface, port).bind(route)
+
+    bindingFuture.onComplete {
+      case Success(binding) => {
+        val address = binding.localAddress
+      }
+      case Failure(exception) => {
+        println("Persistence Service couldn't be started because of Error: " + exception + "\n")
+      }
+    }
 
     println(s"FileIO service started: http://$interface:$port")
     println("Press return to stop")

@@ -11,6 +11,9 @@ import org.mongodb.scala.model.Updates.set
 import org.mongodb.scala.model.Filters.*
 import org.mongodb.scala.model.Sorts.descending
 import org.mongodb.scala.result.{DeleteResult, InsertOneResult, UpdateResult}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.concurrent.duration.Duration
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.util.Try
@@ -37,13 +40,9 @@ object MongoDB extends PersistenceInterface:
       })
     }
 
-  override def load(): Try[String] =
+  override def load(): Future[String] =
     println("Loading cards in MongoDB")
-    Try{
-      implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
-      implicit val executionContext: ExecutionContextExecutor = system.executionContext
-        Await.result(cardsCollection.find().sort(descending("_id")).limit(1).projection(excludeId()).head().map(_.toJson), 2.second)
-    }
+    Future(Await.result(cardsCollection.find().sort(descending("_id")).limit(1).projection(excludeId()).head().map(_.toJson), Duration.Inf))
 
   override def delete(): Try[Unit] =
     println(s"Deleting cards in MongoDB")
