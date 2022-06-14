@@ -1,0 +1,10 @@
+{
+  "simulation": "slickDBLoadTest.slickDBLoadTest",
+  "simulationId": "slickdbloadtest",
+  "start": 1655228577217,
+  "description": "SlickDB Load test",
+  "scenarios": ["mongoDBLoadTest"],
+  "assertions": [
+
+  ]
+}

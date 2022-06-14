@@ -1,0 +1,10 @@
+{
+  "simulation": "slickDBStressTest.slickDBStressTest",
+  "simulationId": "slickdbstresstest",
+  "start": 1655229275815,
+  "description": "SlickDB STressTest",
+  "scenarios": ["MongoDBStressTest"],
+  "assertions": [
+
+  ]
+}

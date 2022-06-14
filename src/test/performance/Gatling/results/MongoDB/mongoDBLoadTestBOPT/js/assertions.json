@@ -1,0 +1,10 @@
+{
+  "simulation": "mongoDBLoadTest.mongoDBLoadTest",
+  "simulationId": "mongodbloadtest",
+  "start": 1655226302253,
+  "description": "MongoDBLoadTest before optimization",
+  "scenarios": ["mongoDBLoadTest"],
+  "assertions": [
+
+  ]
+}

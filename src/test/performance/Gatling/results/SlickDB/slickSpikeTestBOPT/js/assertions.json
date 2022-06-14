@@ -1,0 +1,10 @@
+{
+  "simulation": "slickDBSpikeTest.slickDBSpikeTest",
+  "simulationId": "slickdbspiketest",
+  "start": 1655229683617,
+  "description": "SlickDB SpikeTest",
+  "scenarios": ["mongoDBSpikeTest"],
+  "assertions": [
+
+  ]
+}

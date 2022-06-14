@@ -1,0 +1,10 @@
+{
+  "simulation": "mongoDBSpikeTest.mongoDBSpikeTest",
+  "simulationId": "mongodbspiketest",
+  "start": 1655227233985,
+  "description": "MongoDB Spike Test",
+  "scenarios": ["mongoDBSpikeTest"],
+  "assertions": [
+
+  ]
+}

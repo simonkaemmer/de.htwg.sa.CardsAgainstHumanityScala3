@@ -1,0 +1,10 @@
+{
+  "simulation": "mongoDBStressTest.MongoDBStressTest",
+  "simulationId": "mongodbstresstest",
+  "start": 1655225661821,
+  "description": "Stress Test for MongoDB before optimization",
+  "scenarios": ["MongoDBStressTest"],
+  "assertions": [
+
+  ]
+}
